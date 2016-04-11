@@ -6,7 +6,7 @@ Description: WP DS FAQ Plus is the expand of WP DS FAQ  plugin. The plugin bases
 Version: 1.2.5
 Author: Kimiya Kitani
 Author URI: https://profiles.wordpress.org/kimipooh/
-Text Domain: wp-ds-faq
+Text Domain: wp-ds-faq-plus
 Domain Path: /lang
 */
 
@@ -412,7 +412,7 @@ class dsfaq{
     #  Говорим WordPress-у что у нас многоязычие в плагине       #
     ##############################################################------------------------------------------------------------#
     function enable_getext() {
-        load_plugin_textdomain('wp-ds-faq', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
+        load_plugin_textdomain('wp-ds-faq-plus', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
     }
     # END enable_getext ##########################################------------------------------------------------------------#
     
@@ -526,10 +526,10 @@ class dsfaq{
 	  // 2011.07.01: 1.0.7: 何も情報がなければ作成中にしておく
 	  // 2011.07.11: 1.0.8: <div class="dsfaq_plus_under_construction"> で括り、CSSでの制御を可能にした
 	   if (empty($quest)){
-		$results .= '<div class="dsfaq_plus_under_construction">' . __('Under Construction.', 'wp-ds-faq')  . '</div>';
+		$results .= '<div class="dsfaq_plus_under_construction">' . __('Under Construction.', 'wp-ds-faq-plus')  . '</div>';
 		return $results;
 	   }else if($visible == 0){ // 2011.09.07 (1.0.13)
-		$results .= '<div class="dsfaq_plus_not_permission">' . __('Not Permission.', 'wp-ds-faq')  . '</div>';
+		$results .= '<div class="dsfaq_plus_not_permission">' . __('Not Permission.', 'wp-ds-faq-plus')  . '</div>';
 		return $results;
 	   }
 
@@ -552,8 +552,8 @@ class dsfaq{
 
                     foreach ($quest as $s) {
                         $results .= '<div class="dsfaq_qa_block" id="dsfaq_qa_block_'.$s['id'].'">';
-                        $results .= '<p><a name="'.$s['id'].'"></a><span class="dsfaq_quest_title">'.__('Question:', 'wp-ds-faq').'</span> <span class="dsfaq_quest" id="dsfaq_quest_'.$s['id'].'">'.$s['quest'].'</span></p>';
-                        $results .= '<p><span class="dsfaq_answer_title">'.__('Answer:', 'wp-ds-faq').'</span></p>';
+                        $results .= '<p><a name="'.$s['id'].'"></a><span class="dsfaq_quest_title">'.__('Question:', 'wp-ds-faq-plus').'</span> <span class="dsfaq_quest" id="dsfaq_quest_'.$s['id'].'">'.$s['quest'].'</span></p>';
+                        $results .= '<p><span class="dsfaq_answer_title">'.__('Answer:', 'wp-ds-faq-plus').'</span></p>';
                         $results .= '<div id="dsfaq_answer_'.$s['id'].'"><div class="dsfaq_answer">';
                         $results .= $s['answer'];					
                         $results .= '</div></div>';
@@ -562,13 +562,13 @@ class dsfaq{
 						//            if(current_user_can('level_10')){
 						if($this->settings_editor_permission){
                             $results .= '<div class="dsfaq_tools" id="dsfaq_tools_'.$s['id'].'">';
-                            $results .= '[ <a href="#_" onclick="dsfaq_front_edit_quest('.$s['id'].');">'.__('Edit', 'wp-ds-faq').'</a> ]'; 
+                            $results .= '[ <a href="#_" onclick="dsfaq_front_edit_quest('.$s['id'].');">'.__('Edit', 'wp-ds-faq-plus').'</a> ]'; 
 							// 2011.03.31: disabled because for to enable it is the high risk. By Kitani.
 							// 2011.08.25 (1.0.11) Limitation by settings and current user permission
 							if (! $settings['wp_dsfaq_plus_disable_all_delete'] && ! $settings['wp_dsfaq_plus_disable_frontedit_delete'])
-                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.$s['id'].');">'.__('Delete&nbsp;question', 'wp-ds-faq').'</a> ]';
+                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.$s['id'].');">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</a> ]';
 							else if($this->settings_admin_permission && ! $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin']){
-                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.$s['id'].');">'.__('Delete&nbsp;question', 'wp-ds-faq').'</a> ]';
+                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.$s['id'].');">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</a> ]';
                             }
                             $results .= '</div>';
                         }
@@ -640,7 +640,7 @@ class dsfaq{
        // 2011.04.01: Add Main Menu
        // 2011.08.24 (1.0.11): 編集者でもFAQの編集ができるようにする
        // 2011.08.25 (1.0.11): 設定名の多言語化
-       	add_menu_page(__('WP DS FAQ Plus', 'wp-ds-faq'), __('FAQ', 'wp-ds-faq'), $settings['wp_dsfaq_plus_editor_permission'], __FILE__, array(&$this, 'options_page') );
+       	add_menu_page(__('WP DS FAQ Plus', 'wp-ds-faq-plus'), __('FAQ', 'wp-ds-faq-plus'), $settings['wp_dsfaq_plus_editor_permission'], __FILE__, array(&$this, 'options_page') );
 
        // 2011.04.24 (1.0.6): カスタムメニューのサブメニューに全カテゴリーを表示（将来的には多言語対応にしたい）
        // 2011.08.26 (1.0.11): 権限の引数を渡すの忘れていた
@@ -648,7 +648,7 @@ class dsfaq{
 
         // 2011.08.24 (1.0.11): 設定の「DS FAQ Plus」は管理者権限が必要とする（従来のまま）
         // そのためには、ここでは編集者以上に権限を与えて置いて、別途設定にアクセスしたときに制限するしかない
-        add_options_page(__('WP DS FAQ Plus Admin Settings', 'wp-ds-faq'), __('FAQ Settings','wp-ds-faq'), $settings['wp_dsfaq_plus_admin_permission'], __FILE__.'&admin_page=1', array(&$this, 'options_page'));
+        add_options_page(__('WP DS FAQ Plus Admin Settings', 'wp-ds-faq-plus'), __('FAQ Settings','wp-ds-faq-plus'), $settings['wp_dsfaq_plus_admin_permission'], __FILE__.'&admin_page=1', array(&$this, 'options_page'));
 //        add_options_page('WP DS FAQ Plus Admin Settings', 'DS FAQ Plus', WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY, __FILE__, $this->admin_settings_menu);
        
         // 以下は、管理メニューに最初にアクセスしたときに出るメニュー
@@ -748,7 +748,7 @@ class dsfaq{
 
            update_option('wp_ds_faq_array', $settings);
 ?>
-<div class="dsfaq_plus_admin_setting_page_updated"><p><strong><?php _e('Updated', 'wp-ds-faq'); ?></strong></p></div>
+<div class="dsfaq_plus_admin_setting_page_updated"><p><strong><?php _e('Updated', 'wp-ds-faq-plus'); ?></strong></p></div>
 <?php
 		}
 
@@ -796,20 +796,20 @@ class dsfaq{
 
 <div class="wrap">
    <div id="wp_ds_faq_plus_admin_menu">
-	<h2><?php _e('WP DS FAQ Plus Admin Settings', 'wp-ds-faq'); ?></h2>
+	<h2><?php _e('WP DS FAQ Plus Admin Settings', 'wp-ds-faq-plus'); ?></h2>
 	<form method="post" action="">
 		<input type="hidden" name="posted" value="Y" />
 
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-		<legend><h3><?php _e('Note','wp-ds-faq'); ?></h3></legend>
+		<legend><h3><?php _e('Note','wp-ds-faq-plus'); ?></h3></legend>
 			<ul>
 			  <?php if(! $this->settings_admin_permission){ ?>
-				<li><?php _e('* You don\'t have the permissions for changing the settings.','wp-ds-faq'); ?></li>
+				<li><?php _e('* You don\'t have the permissions for changing the settings.','wp-ds-faq-plus'); ?></li>
 			  <?php }else{ ?>
-				<li><?php _e('* You have all permissions for changing the settings.','wp-ds-faq'); ?></li>
+				<li><?php _e('* You have all permissions for changing the settings.','wp-ds-faq-plus'); ?></li>
 			  <?php } ?>
-				<li><?php _e('* wp-ds-faq-plus.css: The layout and design for FAQ pages.','wp-ds-faq'); ?></li>
-				<li><?php _e('* wp-ds-adminfaq.css: The layout and design for admin pages.','wp-ds-faq'); ?></li>
+				<li><?php _e('* wp-ds-faq-plus.css: The layout and design for FAQ pages.','wp-ds-faq-plus'); ?></li>
+				<li><?php _e('* wp-ds-adminfaq.css: The layout and design for admin pages.','wp-ds-faq-plus'); ?></li>
 
 			</ul>
 
@@ -817,25 +817,25 @@ class dsfaq{
     <?php // 2011.09.07 (1.0.13) Explanation for shortcode ?>
     <br>
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-		<legend><h3><?php _e('How to use Shortcode','wp-ds-faq'); ?></h3></legend><br />
-            <p><?php _e('First of all, the format for WP DS FAQ plugin can be used.','wp-ds-faq'); ?></p>
+		<legend><h3><?php _e('How to use Shortcode','wp-ds-faq-plus'); ?></h3></legend><br />
+            <p><?php _e('First of all, the format for WP DS FAQ plugin can be used.','wp-ds-faq-plus'); ?></p>
 			<ul>
 				<li>[dsfaq id="number"]<br>
 				<ul>
-					<li><?php _e('This is the simple. About id number, please see FAQ menu.','wp-ds-faq'); ?></li>
+					<li><?php _e('This is the simple. About id number, please see FAQ menu.','wp-ds-faq-plus'); ?></li>
 				</ul></li>
 				<li>[dsfaq id="number" visible="on/off"]<br>
 				<ul>
-					<li><?php _e('In case that [visible] setting in shortcode is [on] and [visible] setting in FAQ category is [Not publish], when the user with the permission of editor or administrator in the FAQ login to Wordpress, the FAQ data is displayed.','wp-ds-faq'); ?></li>
-					<li><?php _e('Maybe, in case that there is one or more private FAQ categories and you want to use [latest] option, this option will work effectively.','wp-ds-faq'); ?></li>
+					<li><?php _e('In case that [visible] setting in shortcode is [on] and [visible] setting in FAQ category is [Not publish], when the user with the permission of editor or administrator in the FAQ login to Wordpress, the FAQ data is displayed.','wp-ds-faq-plus'); ?></li>
+					<li><?php _e('Maybe, in case that there is one or more private FAQ categories and you want to use [latest] option, this option will work effectively.','wp-ds-faq-plus'); ?></li>
 				</ul></li>
 				<li>[dsfaq latest="number" orderbydesc="on/off" latest_format="li/dl/table"]<br>
 				<ul>
-					<li><?php _e('default value: latest=5, orderbydesc=off, visible=on, latest_format=li','wp-ds-faq'); ?></li>
-					<li><?php _e('[latest] value means the number of latest items (last modified) in all FAQ data.','wp-ds-faq'); ?></li>
-					<li><?php _e('[orderbydesc] value means on=Descending off=Ascending (default).','wp-ds-faq'); ?></li>
-					<li><?php _e('[latest_format] value can be changed the display settings. Please see wp-ds-faq-plus.css file if you would like to change the layout and design.','wp-ds-faq'); ?></li>
-					<li><?php _e('* In case of setting up of [not publish] in a FAQ category, the data in the FAQ category does not display, but when you login with the permission of editor or administrator, the FAQ will display at gray color. Concretely, administrator want to see all latest information, but the private or local information does not want to display.','wp-ds-faq'); ?></li>
+					<li><?php _e('default value: latest=5, orderbydesc=off, visible=on, latest_format=li','wp-ds-faq-plus'); ?></li>
+					<li><?php _e('[latest] value means the number of latest items (last modified) in all FAQ data.','wp-ds-faq-plus'); ?></li>
+					<li><?php _e('[orderbydesc] value means on=Descending off=Ascending (default).','wp-ds-faq-plus'); ?></li>
+					<li><?php _e('[latest_format] value can be changed the display settings. Please see wp-ds-faq-plus.css file if you would like to change the layout and design.','wp-ds-faq-plus'); ?></li>
+					<li><?php _e('* In case of setting up of [not publish] in a FAQ category, the data in the FAQ category does not display, but when you login with the permission of editor or administrator, the FAQ will display at gray color. Concretely, administrator want to see all latest information, but the private or local information does not want to display.','wp-ds-faq-plus'); ?></li>
 					
 				</ul></li>
 			</ul>
@@ -843,15 +843,15 @@ class dsfaq{
     </fieldset>
     <br>
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-        <legend><h3><?php _e('General Settings', 'wp-ds-faq');  ?></h3></legend>
-		    <h4><?php _e('Display Title','wp-ds-faq'); ?> <input type="checkbox" name="wp_dsfaq_plus_general_display_title" id="wp_dsfaq_plus_general_display_title" value="1"<?php if(isset($settings['wp_dsfaq_plus_general_display_title']) && $settings['wp_dsfaq_plus_general_display_title'] ) echo ' checked';?><?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> /> </h4>
+        <legend><h3><?php _e('General Settings', 'wp-ds-faq-plus');  ?></h3></legend>
+		    <h4><?php _e('Display Title','wp-ds-faq-plus'); ?> <input type="checkbox" name="wp_dsfaq_plus_general_display_title" id="wp_dsfaq_plus_general_display_title" value="1"<?php if(isset($settings['wp_dsfaq_plus_general_display_title']) && $settings['wp_dsfaq_plus_general_display_title'] ) echo ' checked';?><?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> /> </h4>
 			<ul>
-				<li><?php _e('In case of using more than 2 FAQ shortcodes in same page, this option will be only effective.','wp-ds-faq'); ?></li>
+				<li><?php _e('In case of using more than 2 FAQ shortcodes in same page, this option will be only effective.','wp-ds-faq-plus'); ?></li>
 		  	</ul>
 		  	
 			<?php if($this->settings_admin_permission){ ?>
 				<p class="dsfaq_drv">
-					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq'); ?>" class="button" />
+					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq-plus'); ?>" class="button" />
 				</p>
 			<?php      } ?>
 	<br>
@@ -859,27 +859,27 @@ class dsfaq{
     <br>
     
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-		<legend><h3><?php _e('Permissions','wp-ds-faq'); ?></h3></legend>
-			<h4><?php _e('FAQ Administrative Permission', 'wp-ds-faq'); ?> <input type="text" name="wp_dsfaq_plus_admin_permission" id="wp_dsfaq_plus_admin_permission" class="regular-text code"  value="<?php if(empty($settings['wp_dsfaq_plus_admin_permission'])) echo WP_DSFAQ_PLUS_ADMIN_CONTROL_CAPABILITY; else echo esc_attr($settings['wp_dsfaq_plus_admin_permission']);?>" <?php if( ! $this->settings_admin_permission) echo ' disabled'; ?>/>
-			<?php if(defined('WP_DSFAQ_PLUS_ADMIN_CONTROL_CAPABILITY')) echo ' (' . __('Default value: ', 'wp-ds-faq') . WP_DSFAQ_PLUS_ADMIN_CONTROL_CAPABILITY . ')'; ?>
-			<?php if(!preg_match("/^[a-zA-Z0-9_]+$/", esc_attr($settings['wp_dsfaq_plus_admin_permission']))) echo '<br><span style="color:red;">' . __('Attention! Default value was forcibly applied because of including an Illegal character.', 'wp-ds-faq') . '</span>'; ?>
+		<legend><h3><?php _e('Permissions','wp-ds-faq-plus'); ?></h3></legend>
+			<h4><?php _e('FAQ Administrative Permission', 'wp-ds-faq-plus'); ?> <input type="text" name="wp_dsfaq_plus_admin_permission" id="wp_dsfaq_plus_admin_permission" class="regular-text code"  value="<?php if(empty($settings['wp_dsfaq_plus_admin_permission'])) echo WP_DSFAQ_PLUS_ADMIN_CONTROL_CAPABILITY; else echo esc_attr($settings['wp_dsfaq_plus_admin_permission']);?>" <?php if( ! $this->settings_admin_permission) echo ' disabled'; ?>/>
+			<?php if(defined('WP_DSFAQ_PLUS_ADMIN_CONTROL_CAPABILITY')) echo ' (' . __('Default value: ', 'wp-ds-faq-plus') . WP_DSFAQ_PLUS_ADMIN_CONTROL_CAPABILITY . ')'; ?>
+			<?php if(!preg_match("/^[a-zA-Z0-9_]+$/", esc_attr($settings['wp_dsfaq_plus_admin_permission']))) echo '<br><span style="color:red;">' . __('Attention! Default value was forcibly applied because of including an Illegal character.', 'wp-ds-faq-plus') . '</span>'; ?>
 			</h4>
-			<h4><?php _e('FAQ Editing Permission', 'wp-ds-faq'); ?> <input type="text" name="wp_dsfaq_plus_editor_permission" id="wp_dsfaq_plus_editor_permission" class="regular-text code" value="<?php if(empty($settings['wp_dsfaq_plus_editor_permission'])) echo WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY; else echo esc_attr($settings['wp_dsfaq_plus_editor_permission']);?>"  <?php if( ! $this->settings_admin_permission) echo ' disabled'; ?>/>
-			<?php if(defined('WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY')) echo ' (' . __('Default value: ', 'wp-ds-faq') . WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY . ')'; ?>
-			<?php if(!preg_match("/^[a-zA-Z0-9_]+$/", esc_attr($settings['wp_dsfaq_plus_editor_permission'])))  echo '<br><span style="color:red;">' . __('Attention! Default value was forcibly applied because of including an Illegal character.', 'wp-ds-faq') . '</span>';  ?>
+			<h4><?php _e('FAQ Editing Permission', 'wp-ds-faq-plus'); ?> <input type="text" name="wp_dsfaq_plus_editor_permission" id="wp_dsfaq_plus_editor_permission" class="regular-text code" value="<?php if(empty($settings['wp_dsfaq_plus_editor_permission'])) echo WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY; else echo esc_attr($settings['wp_dsfaq_plus_editor_permission']);?>"  <?php if( ! $this->settings_admin_permission) echo ' disabled'; ?>/>
+			<?php if(defined('WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY')) echo ' (' . __('Default value: ', 'wp-ds-faq-plus') . WP_DSFAQ_PLUS_ADMIN_EDIT_CAPABILITY . ')'; ?>
+			<?php if(!preg_match("/^[a-zA-Z0-9_]+$/", esc_attr($settings['wp_dsfaq_plus_editor_permission'])))  echo '<br><span style="color:red;">' . __('Attention! Default value was forcibly applied because of including an Illegal character.', 'wp-ds-faq-plus') . '</span>';  ?>
 			</h4>
 			<ul>
-				<li><?php _e('Alphameric characters and underline character are only allowed in the settings. If the special characters are used, the Default value of settings are forcibly used.', 'wp-ds-faq');?></li>
-				<li><?php _e('FAQ Editing permission (Default is for Editors) can post, change and delete the FAQ data in FAQ category, but cannot create, change, and delete FAQ category. And cannot access to the admin menu. The delete function is inflenced the settings of [Safety Precaution].', 'wp-ds-faq');?></li>
-				<li><?php _e('FAQ Administrative permission (Default is for Plugin Administrators) can do all operations, such as post, change, and delete. And can access to admin menu', 'wp-ds-faq');?></li>
-				<li><?php _e('In any cases, Administators (level_10) can access with full permission without the settings if Safety Precation.', 'wp-ds-faq');?></li>
-				<li><?php _e('If you set up [level_7] to the value of Administrative permission and set up [edit_posts] to the value of Editing permission, Administrators and Editors can have all permission in FAQ and Contributors can post, change and delete the FAQ data in FAQ category. Of course, by setting up [Safety Precaution], you can put restrictions.', 'wp-ds-faq');?></li>
-				<li><?php _e('About the detail information of permissions, please see ', 'wp-ds-faq');?><a href="<?php _e('http://codex.wordpress.org/Roles_and_Capabilities','wp-ds-faq');?>" target="_blank"><?php _e('Roles and Capabilities in Wordpress.org','wp-ds-faq');?></a></li>
+				<li><?php _e('Alphameric characters and underline character are only allowed in the settings. If the special characters are used, the Default value of settings are forcibly used.', 'wp-ds-faq-plus');?></li>
+				<li><?php _e('FAQ Editing permission (Default is for Editors) can post, change and delete the FAQ data in FAQ category, but cannot create, change, and delete FAQ category. And cannot access to the admin menu. The delete function is inflenced the settings of [Safety Precaution].', 'wp-ds-faq-plus');?></li>
+				<li><?php _e('FAQ Administrative permission (Default is for Plugin Administrators) can do all operations, such as post, change, and delete. And can access to admin menu', 'wp-ds-faq-plus');?></li>
+				<li><?php _e('In any cases, Administators (level_10) can access with full permission without the settings if Safety Precation.', 'wp-ds-faq-plus');?></li>
+				<li><?php _e('If you set up [level_7] to the value of Administrative permission and set up [edit_posts] to the value of Editing permission, Administrators and Editors can have all permission in FAQ and Contributors can post, change and delete the FAQ data in FAQ category. Of course, by setting up [Safety Precaution], you can put restrictions.', 'wp-ds-faq-plus');?></li>
+				<li><?php _e('About the detail information of permissions, please see ', 'wp-ds-faq-plus');?><a href="<?php _e('http://codex.wordpress.org/Roles_and_Capabilities','wp-ds-faq-plus');?>" target="_blank"><?php _e('Roles and Capabilities in Wordpress.org','wp-ds-faq-plus');?></a></li>
 			</ul>
 
 			<?php if($this->settings_admin_permission){ ?>
 				<p class="dsfaq_drv">
-					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq'); ?>" class="button" />
+					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq-plus'); ?>" class="button" />
 				</p>
 			<?php      } ?>
 	<br>
@@ -887,31 +887,31 @@ class dsfaq{
     <br>
     
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-        <legend><h3><?php _e('Safety Precaution','wp-ds-faq'); ?></h3></legend>	
-			<p><?php _e('In any cases without Administrators (level_10), these options are applied.', 'wp-ds-faq');?></p>
+        <legend><h3><?php _e('Safety Precaution','wp-ds-faq-plus'); ?></h3></legend>	
+			<p><?php _e('In any cases without Administrators (level_10), these options are applied.', 'wp-ds-faq-plus');?></p>
 			<h4><input type="checkbox" name="wp_dsfaq_plus_disable_all_delete" id="wp_dsfaq_plus_disable_all_delete" value="1"<?php if(isset($settings['wp_dsfaq_plus_disable_all_delete']) && $settings['wp_dsfaq_plus_disable_all_delete'] ) echo ' checked';?> <?php if( ! $this->settings_admin_permission) echo ' disabled'; ?> />
-		    <?php _e('Disable all Delete function','wp-ds-faq'); ?></h4>
+		    <?php _e('Disable all Delete function','wp-ds-faq-plus'); ?></h4>
 			<h4><input type="checkbox" name="wp_dsfaq_plus_disable_category_delete" id="wp_dsfaq_plus_disable_category_delete" value="1"<?php if(isset($settings['wp_dsfaq_plus_disable_category_delete']) && $settings['wp_dsfaq_plus_disable_category_delete'] ) echo ' checked' ;?><?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> /> 
-			    <?php _e('(Recommend) Disable Delete function for FAQ category','wp-ds-faq'); ?></h4>
+			    <?php _e('(Recommend) Disable Delete function for FAQ category','wp-ds-faq-plus'); ?></h4>
 			<h4><input type="checkbox" name="wp_dsfaq_plus_disable_edit_delete" id="wp_dsfaq_plus_disable_edit_delete" value="1"<?php if(isset($settings['wp_dsfaq_plus_disable_edit_delete']) && $settings['wp_dsfaq_plus_disable_edit_delete'] ) echo ' checked';?><?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> />
-			    <?php _e('Disable Delete function in Edit list','wp-ds-faq'); ?> </h4>
+			    <?php _e('Disable Delete function in Edit list','wp-ds-faq-plus'); ?> </h4>
 			<h4><input type="checkbox" name="wp_dsfaq_plus_disable_frontedit_delete" id="wp_dsfaq_plus_disable_frontedit_delete" value="1"<?php if(isset($settings['wp_dsfaq_plus_disable_frontedit_delete']) && $settings['wp_dsfaq_plus_disable_frontedit_delete'] ) echo ' checked';?><?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> />
-			    <?php _e('(Recommend) Disable Delete function in Front Editer.','wp-ds-faq'); ?> </h4>
+			    <?php _e('(Recommend) Disable Delete function in Front Editer.','wp-ds-faq-plus'); ?> </h4>
 
 			<ul>
-				<li><?php _e('If you want to apply these options to Administrators, please check the following setting.', 'wp-ds-faq');?></li>
+				<li><?php _e('If you want to apply these options to Administrators, please check the following setting.', 'wp-ds-faq-plus');?></li>
 			</ul>
 
 			<h4><input type="checkbox" name="wp_dsfaq_plus_apply_safetyoptions_to_admin" id="wp_dsfaq_plus_apply_safetyoptions_to_admin" value="1"<?php if(isset($settings['wp_dsfaq_plus_apply_safetyoptions_to_admin']) && $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'] ) echo ' checked';?><?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> />
-			    <?php _e('(Recommend) Apply these options to Administrators, too','wp-ds-faq'); ?> </h4>
+			    <?php _e('(Recommend) Apply these options to Administrators, too','wp-ds-faq-plus'); ?> </h4>
 
 			<ul>
-				<li><?php _e('Normally, I recommend to disable the delete function because of prevention from unexpected data lost. Especially, there is heavy risk about the delete function for the category.', 'wp-ds-faq');?></li>
+				<li><?php _e('Normally, I recommend to disable the delete function because of prevention from unexpected data lost. Especially, there is heavy risk about the delete function for the category.', 'wp-ds-faq-plus');?></li>
 			</ul>
 			
 			<?php if($this->settings_admin_permission){ ?>
 				<p class="dsfaq_drv">
-					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq'); ?>" class="button" />
+					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq-plus'); ?>" class="button" />
 				</p>
 			<?php      } ?>
 	<br>
@@ -919,17 +919,17 @@ class dsfaq{
     <br>
 			
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-        <legend><h3><?php _e('Linkage from other plugins', 'wp-ds-faq');  ?></h3></legend>
-			<h4><input type="checkbox" name="wp_dsfaq_plus_enable_ratings" id="wp_dsfaq_plus_enable_ratings" value="1"<?php if(isset($settings['wp_dsfaq_plus_enable_ratings']) && $settings['wp_dsfaq_plus_enable_ratings'] ) echo ' checked';?><?php if( !function_exists('the_ratings') || ! $this->settings_admin_permission ) echo ' disabled'; ?> /><?php if(!function_exists('the_ratings') ) echo ' (' . __('Please install or activate WP-PostRatings plugin.', 'wp-ds-faq') . ')'; ?> 
-			    <?php _e('Enable Ratings Display.','wp-ds-faq'); ?> <?php if(function_exists('the_ratings')) _e('(WP-PostRatings plugin is already activated.)','wp-ds-faq');?></h4>
+        <legend><h3><?php _e('Linkage from other plugins', 'wp-ds-faq-plus');  ?></h3></legend>
+			<h4><input type="checkbox" name="wp_dsfaq_plus_enable_ratings" id="wp_dsfaq_plus_enable_ratings" value="1"<?php if(isset($settings['wp_dsfaq_plus_enable_ratings']) && $settings['wp_dsfaq_plus_enable_ratings'] ) echo ' checked';?><?php if( !function_exists('the_ratings') || ! $this->settings_admin_permission ) echo ' disabled'; ?> /><?php if(!function_exists('the_ratings') ) echo ' (' . __('Please install or activate WP-PostRatings plugin.', 'wp-ds-faq-plus') . ')'; ?> 
+			    <?php _e('Enable Ratings Display.','wp-ds-faq-plus'); ?> <?php if(function_exists('the_ratings')) _e('(WP-PostRatings plugin is already activated.)','wp-ds-faq-plus');?></h4>
 			<ul>
-				<li><?php _e('First, please install and activate WP-PostRatings plugin.','wp-ds-faq'); ?></li>
-		  		<li><?php _e('By enabling this option, the rating button in WP-PostRatings plugin can be displayed in each FAQ messages.','wp-ds-faq');?></li>
+				<li><?php _e('First, please install and activate WP-PostRatings plugin.','wp-ds-faq-plus'); ?></li>
+		  		<li><?php _e('By enabling this option, the rating button in WP-PostRatings plugin can be displayed in each FAQ messages.','wp-ds-faq-plus');?></li>
 		  	</ul>
 		  	
 			<?php if($this->settings_admin_permission){ ?>
 				<p class="dsfaq_drv">
-					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq'); ?>" class="button" />
+					<input type="submit" name="Submit" value="<?php _e('Save Settings', 'wp-ds-faq-plus'); ?>" class="button" />
 				</p>
 			<?php      } ?>
 	<br>
@@ -941,13 +941,13 @@ class dsfaq{
 
     <?php // 2011.08.25 (1.0.11) Movement of header and CSS setting menu ?>
     <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-        <legend><h3><?php _e('Header and CSS Settings','wp-ds-faq'); ?></h3></legend>
-        <p><input id="dsfaq_h1" type="text" value="<?php if (isset($settings['wp_ds_faq_h1'])){echo $settings['wp_ds_faq_h1'];}; ?>" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>/> <?php _e('Text before the FAQ book name.', 'wp-ds-faq') ?></p>
-        <p><input id="dsfaq_h2" type="text" value="<?php if (isset($settings['wp_ds_faq_h2'])){echo $settings['wp_ds_faq_h2'];}; ?>" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>/> <?php _e('Text after the FAQ book name.', 'wp-ds-faq') ?></p>
+        <legend><h3><?php _e('Header and CSS Settings','wp-ds-faq-plus'); ?></h3></legend>
+        <p><input id="dsfaq_h1" type="text" value="<?php if (isset($settings['wp_ds_faq_h1'])){echo $settings['wp_ds_faq_h1'];}; ?>" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>/> <?php _e('Text before the FAQ book name.', 'wp-ds-faq-plus') ?></p>
+        <p><input id="dsfaq_h2" type="text" value="<?php if (isset($settings['wp_ds_faq_h2'])){echo $settings['wp_ds_faq_h2'];}; ?>" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>/> <?php _e('Text after the FAQ book name.', 'wp-ds-faq-plus') ?></p>
         <p>CSS</p>
         <textarea id="dsfaq_css" rows="10" cols="45" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>><?php if (isset($settings['wp_ds_faq_css'])){echo stripslashes($settings['wp_ds_faq_css']);}; ?></textarea>
-        <p><input id="dsfaq_copyr" type="checkbox" name="copyright"<?php if ($settings['wp_ds_faq_showcopyright'] == true){echo " checked";}; ?> <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>/> <?php _e('Show a link to the plugin in the end of the page.', 'wp-ds-faq') ?></p>
-        <p class="dsfaq_drv"><img src="<?php echo $this->plugurl; ?>img/1x1.gif" width="1" height="16"><span id="dsfaq_progress"></span> &nbsp; <a href="#_" onclick="dsfaq_restore_settings();" class="button" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>><?php _e('Restore settings', 'wp-ds-faq') ?></a> &nbsp; <a href="#_" onclick="dsfaq_save_settings();" class="button" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>><?php _e('Save Settings', 'wp-ds-faq') ?></a></p>
+        <p><input id="dsfaq_copyr" type="checkbox" name="copyright"<?php if ($settings['wp_ds_faq_showcopyright'] == true){echo " checked";}; ?> <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>/> <?php _e('Show a link to the plugin in the end of the page.', 'wp-ds-faq-plus') ?></p>
+        <p class="dsfaq_drv"><img src="<?php echo $this->plugurl; ?>img/1x1.gif" width="1" height="16"><span id="dsfaq_progress"></span> &nbsp; <a href="#_" onclick="dsfaq_restore_settings();" class="button" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>><?php _e('Restore settings', 'wp-ds-faq-plus') ?></a> &nbsp; <a href="#_" onclick="dsfaq_save_settings();" class="button" <?php if(! $this->settings_admin_permission) echo ' disabled'; ?>><?php _e('Save Settings', 'wp-ds-faq-plus') ?></a></p>
         <br>
     </fieldset>
   </div>
@@ -1008,16 +1008,16 @@ class dsfaq{
         }
         function add_input_quest(id,numid){
             document.getElementById(id).style.backgroundColor = '#fdfdef';
-            document.getElementById(id).innerHTML =  '<p><?php _e('Question:', 'wp-ds-faq') ?></p>';
+            document.getElementById(id).innerHTML =  '<p><?php _e('Question:', 'wp-ds-faq-plus') ?></p>';
             document.getElementById(id).innerHTML += '<input id="dsfaq_quest" type="text" value="" />';
-            document.getElementById(id).innerHTML += '<p><?php _e('Answer:', 'wp-ds-faq') ?></p>';
+            document.getElementById(id).innerHTML += '<p><?php _e('Answer:', 'wp-ds-faq-plus') ?></p>';
             document.getElementById(id).innerHTML += '<textarea id="dsfaq_answer" rows="10" cols="45" name="text"></textarea><br>';
-            document.getElementById(id).innerHTML += '<p class="dsfaq_drv"><a href="#_" onclick="this.innerHTML=\'<img src=<?php echo $this->plugurl; ?>img/ajax-loader.gif>\'; save_quest(' + numid + ');"><span class="button"><?php _e('Save', 'wp-ds-faq') ?></span></a> &nbsp; <a href="#_" onclick="cancel_quest(\'' + id + '\', \'' + numid + '\');" class="button"><?php _e('Cancel', 'wp-ds-faq') ?></a></p>';
+            document.getElementById(id).innerHTML += '<p class="dsfaq_drv"><a href="#_" onclick="this.innerHTML=\'<img src=<?php echo $this->plugurl; ?>img/ajax-loader.gif>\'; save_quest(' + numid + ');"><span class="button"><?php _e('Save', 'wp-ds-faq-plus') ?></span></a> &nbsp; <a href="#_" onclick="cancel_quest(\'' + id + '\', \'' + numid + '\');" class="button"><?php _e('Cancel', 'wp-ds-faq-plus') ?></a></p>';
             return true;
         }
         function cancel_quest(id,numid){
             document.getElementById(id).style.backgroundColor = '#FFFFFF';
-            document.getElementById(id).innerHTML =  '<a href="#_" onclick="add_input_quest(\'' + id + '\', \'' + numid + '\');" class="button"><?php _e('Add&nbsp;question', 'wp-ds-faq') ?></a>';
+            document.getElementById(id).innerHTML =  '<a href="#_" onclick="add_input_quest(\'' + id + '\', \'' + numid + '\');" class="button"><?php _e('Add&nbsp;question', 'wp-ds-faq-plus') ?></a>';
             return true;
         }
         function save_quest(id){
@@ -1057,7 +1057,7 @@ class dsfaq{
         function cancel_edit(id,obj){
             idElem = document.getElementById(obj);
             idElem.parentNode.removeChild(idElem);
-            document.getElementById("dsfaq_edit_link_" + id).innerHTML = '<a href="#_" onclick="this.innerHTML=\'<img src=<?php echo $this->plugurl; ?>img/ajax-loader.gif>\'; edit_quest(' + id + ');"><span class="button"><?php _e('Edit', 'wp-ds-faq') ?></span></a>';
+            document.getElementById("dsfaq_edit_link_" + id).innerHTML = '<a href="#_" onclick="this.innerHTML=\'<img src=<?php echo $this->plugurl; ?>img/ajax-loader.gif>\'; edit_quest(' + id + ');"><span class="button"><?php _e('Edit', 'wp-ds-faq-plus') ?></span></a>';
             document.getElementById("dsfaq_idquest_" + id).style.backgroundColor = '#FFFFFF';
             return true;
         }
@@ -1241,20 +1241,20 @@ echo "        </div>";
  ?>
 
 <div class="wrap">
-    <h2><?php _e('WP DS FAQ Plus Settings:', 'wp-ds-faq') ?></h2>
+    <h2><?php _e('WP DS FAQ Plus Settings:', 'wp-ds-faq-plus') ?></h2>
     <br>
-    <p><?php _e('Every FAQ book has its own <b>ID</b>.', 'wp-ds-faq') ?></p>
-    <p><?php _e('To have the book viewed on a page you need to write a key word and specify book ID (for example: <b>[dsfaq id=1]</b>).', 'wp-ds-faq') ?></p>
+    <p><?php _e('Every FAQ book has its own <b>ID</b>.', 'wp-ds-faq-plus') ?></p>
+    <p><?php _e('To have the book viewed on a page you need to write a key word and specify book ID (for example: <b>[dsfaq id=1]</b>).', 'wp-ds-faq-plus') ?></p>
     <?php // 2011.08.26 (1.0.11): Introduction of admin menu. ?>
-    <?php echo  '<p><a href="options-general.php?page=' . plugin_basename(__FILE__) .'&admin_page=1" target="_blank">' . __('Admin Settings','wp-ds-faq') . '</a> ' . __('was established.','wp-ds-faq') ; ?>
-    <?php echo  ' ' . __('For displaying the delete button, please check the settings in it.','wp-ds-faq') . '</p>'; ?>
+    <?php echo  '<p><a href="options-general.php?page=' . plugin_basename(__FILE__) .'&admin_page=1" target="_blank">' . __('Admin Settings','wp-ds-faq-plus') . '</a> ' . __('was established.','wp-ds-faq-plus') ; ?>
+    <?php echo  ' ' . __('For displaying the delete button, please check the settings in it.','wp-ds-faq-plus') . '</p>'; ?>
     <br>
-    <p><?php _e('You can create a new FAQ book:', 'wp-ds-faq') ?></p>
+    <p><?php _e('You can create a new FAQ book:', 'wp-ds-faq-plus') ?></p>
     <?php // 2011.08.25 (1.0.11): Limitation from settings ?>
     <input id="name_faq" type="text" value="" <?php if( ! $this->settings_admin_permission ) echo ' disabled'; ?> />
     <?php if($this->settings_admin_permission){ ?>
     <?php // Fixed bug 2011.08.30 (1.0.12-1) ?>
-    <a href="#_" onclick="dsfaq_add_input();" class="button"><?php _e('Add FAQ', 'wp-ds-faq') ?></a>
+    <a href="#_" onclick="dsfaq_add_input();" class="button"><?php _e('Add FAQ', 'wp-ds-faq-plus') ?></a>
     <?php } ?>
     
     <span id="s1"></span>
@@ -1268,13 +1268,13 @@ echo "        </div>";
 <?php // $settings = get_option('wp_ds_faq_array'); ?>
 <!--
     <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-        <legend><?php _e('Settings:', 'wp-ds-faq') ?></legend>
-        <p><input id="dsfaq_h1" type="text" value="<?php if (isset($settings['wp_ds_faq_h1'])){echo $settings['wp_ds_faq_h1'];}; ?>" /> <?php _e('Text before the FAQ book name.', 'wp-ds-faq') ?></p>
-        <p><input id="dsfaq_h2" type="text" value="<?php if (isset($settings['wp_ds_faq_h2'])){echo $settings['wp_ds_faq_h2'];}; ?>" /> <?php _e('Text after the FAQ book name.', 'wp-ds-faq') ?></p>
+        <legend><?php _e('Settings:', 'wp-ds-faq-plus') ?></legend>
+        <p><input id="dsfaq_h1" type="text" value="<?php if (isset($settings['wp_ds_faq_h1'])){echo $settings['wp_ds_faq_h1'];}; ?>" /> <?php _e('Text before the FAQ book name.', 'wp-ds-faq-plus') ?></p>
+        <p><input id="dsfaq_h2" type="text" value="<?php if (isset($settings['wp_ds_faq_h2'])){echo $settings['wp_ds_faq_h2'];}; ?>" /> <?php _e('Text after the FAQ book name.', 'wp-ds-faq-plus') ?></p>
         <p>CSS</p>
         <textarea id="dsfaq_css" rows="10" cols="45"><?php if (isset($settings['wp_ds_faq_css'])){echo stripslashes($settings['wp_ds_faq_css']);}; ?></textarea>
-        <p><input id="dsfaq_copyr" type="checkbox" name="copyright"<?php if ($settings['wp_ds_faq_showcopyright'] == true){echo " checked";}; ?>> <?php _e('Show a link to the plugin in the end of the page.', 'wp-ds-faq') ?></p>
-        <p class="dsfaq_drv"><img src="<?php echo $this->plugurl; ?>img/1x1.gif" width="1" height="16"><span id="dsfaq_progress"></span> &nbsp; <a href="#_" onclick="dsfaq_restore_settings();" class="button"><?php _e('Restore settings', 'wp-ds-faq') ?></a> &nbsp; <a href="#_" onclick="dsfaq_save_settings();" class="button"><?php _e('Save', 'wp-ds-faq') ?></a></p>
+        <p><input id="dsfaq_copyr" type="checkbox" name="copyright"<?php if ($settings['wp_ds_faq_showcopyright'] == true){echo " checked";}; ?>> <?php _e('Show a link to the plugin in the end of the page.', 'wp-ds-faq-plus') ?></p>
+        <p class="dsfaq_drv"><img src="<?php echo $this->plugurl; ?>img/1x1.gif" width="1" height="16"><span id="dsfaq_progress"></span> &nbsp; <a href="#_" onclick="dsfaq_restore_settings();" class="button"><?php _e('Restore settings', 'wp-ds-faq-plus') ?></a> &nbsp; <a href="#_" onclick="dsfaq_save_settings();" class="button"><?php _e('Save', 'wp-ds-faq-plus') ?></a></p>
         <br>
     </fieldset>
     <br><br>
@@ -1427,9 +1427,9 @@ echo "        </div>";
 			if(!empty($l_first)) $results .= $l_first . "\n";
 			if($latest_format == "table"){ // 2011.09.22 (1.0.14) Added item's title in the table.
 			   $results .= $l_head;
-			   $results .= $l_head_i . __('Date','wp-ds-faq') . $l_head_i_end;
-			   $results .= $l_head_i . __('Category','wp-ds-faq') . $l_head_i_end;
-			   $results .= $l_head_i . __('Question','wp-ds-faq') . $l_head_i_end;
+			   $results .= $l_head_i . __('Date','wp-ds-faq-plus') . $l_head_i_end;
+			   $results .= $l_head_i . __('Category','wp-ds-faq-plus') . $l_head_i_end;
+			   $results .= $l_head_i . __('Question','wp-ds-faq-plus') . $l_head_i_end;
 			   $results .= $l_head_end;
 			}
            	foreach ($select as $s) {
@@ -1517,7 +1517,7 @@ echo "        </div>";
                 
          		// 2011.08.25 (1.0.11)  Limitation by current user permission 
                 if($this->settings_admin_permission){
-                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_edit_name_book(\''.$s['id'].'\');"><span class="button">'.__('Change&nbsp;title', 'wp-ds-faq').'</span></a>';
+                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_edit_name_book(\''.$s['id'].'\');"><span class="button">'.__('Change&nbsp;title', 'wp-ds-faq-plus').'</span></a>';
                 }
 
                 $results .= '</td><td width="120" align="center">';
@@ -1525,18 +1525,18 @@ echo "        </div>";
        		// 2011.08.25 (1.0.11)  Limitation by current user permission 
                 if($this->settings_admin_permission){
 					  if(! $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'])
-		                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.$s["id"].'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq').'</span></a>';
+		                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.$s["id"].'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'</span></a>';
 		              else  if(! $settings['wp_dsfaq_plus_disable_all_delete'] && ! $settings['wp_dsfaq_plus_disable_category_delete'])
-	                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.$s["id"].'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq').'</span></a>';
+	                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.$s["id"].'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'</span></a>';
 	                  else
-	                  	$results .= '<input type="button" name="dummy_button" value="'.__('Delete&nbsp;FAQ', 'wp-ds-faq').'" class="button" disabled/>';
+	                  	$results .= '<input type="button" name="dummy_button" value="'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'" class="button" disabled/>';
 	            }
 
                 $results .= '</td></tr></table>';
                 $results .= '</div>';
                 $results .= '<div class="dsfaq_divshortcode">';
                 $results .= '<fieldset style="border-top:1px solid #cccccc; width: 685px; margin-left: 5px; padding-left: 5px;">';
-                $results .= '<legend class="dsfaq_shortcode">'.__('Options for this FAQ:', 'wp-ds-faq').'</legend>';
+                $results .= '<legend class="dsfaq_shortcode">'.__('Options for this FAQ:', 'wp-ds-faq-plus').'</legend>';
                 $results .= '<br><table border="0" width="690"><tr>';
 
 				// 2011.07.19: 1.0.9 for sort
@@ -1557,33 +1557,33 @@ echo "        </div>";
 				//                $results .= '<td width="50%">';
 //               $results .= '<td width="50%" rowspan="3">';
                $results .= '<td width="50%" rowspan="4">'; // 2011.09.07 (1.0.13)
-                $results .= '<span class="dsfaq_shortcode">'.__('Short&nbsp;code:', 'wp-ds-faq').'&nbsp;<b>[dsfaq&nbsp;id="'.$s['id'].'"]</b></span>';
+                $results .= '<span class="dsfaq_shortcode">'.__('Short&nbsp;code:', 'wp-ds-faq-plus').'&nbsp;<b>[dsfaq&nbsp;id="'.$s['id'].'"]</b></span>';
                 $results .= '</td><td width="1"><img src="'.$this->plugurl.'img/1x1.gif" width="1" height="18"></td><td width="10%" align="right">';
-                $results .= '<span class="dsfaq_shortcode">'.__('Display:', 'wp-ds-faq').' </span> ';
+                $results .= '<span class="dsfaq_shortcode">'.__('Display:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
                 $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_mode_'.$s['id'].'">';
 /*
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($s['mode'] == 0)?"checked":"").'> '.(($s['mode'] == 0)?"<b>":"").__('deployed', 'wp-ds-faq').(($s['mode'] == 0)?"</b>":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($s['mode'] == 0)?"checked":"").'> '.(($s['mode'] == 0)?"<b>":"").__('deployed', 'wp-ds-faq-plus').(($s['mode'] == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($s['mode'] == 1)?"checked":"").'> '.(($s['mode'] == 1)?"<b>":"").__('minimized', 'wp-ds-faq').(($s['mode'] == 1)?"</b>":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($s['mode'] == 1)?"checked":"").'> '.(($s['mode'] == 1)?"<b>":"").__('minimized', 'wp-ds-faq-plus').(($s['mode'] == 1)?"</b>":"");
 */
 
 				// 2011.07.19: 1.0.9 for sort
 				
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($mode == 0)?"checked":"").'> '.(($mode == 0)?"<b>":"").__('deployed', 'wp-ds-faq').(($mode == 0)?"</b>":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($mode == 0)?"checked":"").'> '.(($mode == 0)?"<b>":"").__('deployed', 'wp-ds-faq-plus').(($mode == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
                 $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($mode == 1)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '. (($mode == 1)?"<b>":"").__('minimized', 'wp-ds-faq').(($mode == 1)?"</b>":"");
+                $results .= '> '. (($mode == 1)?"<b>":"").__('minimized', 'wp-ds-faq-plus').(($mode == 1)?"</b>":"");
 
                 $results .= '</span>';
                 $results .= '</td>';
 
 			    // 2011.07.19: 1.0.9: Display Sort (added) 
                 $results .= '</tr><tr><td width="1"><img src="'.$this->plugurl.'img/1x1.gif" width="1" height="18"></td><td align="right">';
-                $results .= '<span class="dsfaq_shortcode">'.__('Sort Key:', 'wp-ds-faq').' </span> ';
+                $results .= '<span class="dsfaq_shortcode">'.__('Sort Key:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
 
                 $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_sort_'.$s['id'].'">';
@@ -1591,26 +1591,26 @@ echo "        </div>";
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results  .= '> '.(($sort == 0)?"<b>":"").__('Custom', 'wp-ds-faq').(($sort == 0)?"</b>":"");
+                $results  .= '> '.(($sort == 0)?"<b>":"").__('Custom', 'wp-ds-faq-plus').(($sort == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
                 $results .= '<input type="radio" name="dsfaq_sort_'.$s['id'].'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'1\');" '.(($sort == 1)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '.(($sort == 1)?"<b>":"").__('Last modified', 'wp-ds-faq').(($sort == 1)?"</b>":"");
+                $results .= '> '.(($sort == 1)?"<b>":"").__('Last modified', 'wp-ds-faq-plus').(($sort == 1)?"</b>":"");
 
                 $results .= ' &nbsp; ';
                 $results .= '<input type="radio" name="dsfaq_sort_'.$s['id'].'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'2\');" '.(($sort == 2)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '.(($sort == 2)?"<b>":"").__('Answer Name', 'wp-ds-faq').(($sort == 2)?"</b>":"");
+                $results .= '> '.(($sort == 2)?"<b>":"").__('Answer Name', 'wp-ds-faq-plus').(($sort == 2)?"</b>":"");
                 $results .= '</span>';
                 $results .= '</td>';
 
 				// 2011.07.19: 1.0.9: Sort 2:  ASC or DESC
                 $results .= '</tr><tr><td width="1"><img src="'.$this->plugurl.'img/1x1.gif" width="1" height="18"></td><td align="right">';
-                $results .= '<span class="dsfaq_shortcode">'.__('Order by:', 'wp-ds-faq').' </span> ';
+                $results .= '<span class="dsfaq_shortcode">'.__('Order by:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
 
                 $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_order_'.$s['id'].'">';
@@ -1618,19 +1618,19 @@ echo "        </div>";
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '.(($order == 0)?"<b>":"").__('Ascending', 'wp-ds-faq').(($order == 0)?"</b>":"");
+                $results .= '> '.(($order == 0)?"<b>":"").__('Ascending', 'wp-ds-faq-plus').(($order == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
                 $results .= '<input type="radio" name="dsfaq_order_'.$s['id'].'" onclick="dsfaq_change_faqdisplayorder(\''.$s['id'].'\', \'1\');" '.(($order == 1)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '.(($order == 1)?"<b>":"").__('Descending', 'wp-ds-faq').(($order == 1)?"</b>":"");
+                $results .= '> '.(($order == 1)?"<b>":"").__('Descending', 'wp-ds-faq-plus').(($order == 1)?"</b>":"");
                 $results .= '</span>';
                 $results .= '</td>';
 
 				// 2011.09.07 (1.0.13): Visible or not
                 $results .= '</tr><tr><td width="1"><img src="'.$this->plugurl.'img/1x1.gif" width="1" height="18"></td><td align="right">';
-                $results .= '<span class="dsfaq_shortcode">'.__('Visible:', 'wp-ds-faq').' </span> ';
+                $results .= '<span class="dsfaq_shortcode">'.__('Visible:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
 
                 $results .= '<span class="dsfaq_shortcode" id="dsfaq_faqdisplay_visible_'.$s['id'].'">';
@@ -1638,14 +1638,14 @@ echo "        </div>";
 
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '.(($visible == 1)?"<b>":"").__('Publish', 'wp-ds-faq').(($visible == 1)?"</b>":"");
+                $results .= '> '.(($visible == 1)?"<b>":"").__('Publish', 'wp-ds-faq-plus').(($visible == 1)?"</b>":"");
                 $results .= ' &nbsp; ';
 
                 $results .= '<input type="radio" name="dsfaq_faqdisplay_visible_'.$s['id'].'" onclick="dsfaq_faqdisplay_visible(\''.$s['id'].'\', \'0\');" '.(($visible == 0)?"checked":"");
 
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
-                $results .= '> '.(($visible == 0)?"<b>":"").__('Not publish', 'wp-ds-faq').(($visible == 0)?"</b>":"");
+                $results .= '> '.(($visible == 0)?"<b>":"").__('Not publish', 'wp-ds-faq-plus').(($visible == 0)?"</b>":"");
                 $results .= '</span>';
                 $results .= '</td>';
                 
@@ -1659,7 +1659,7 @@ echo "        </div>";
                 $results .= $this->get_quest_from_faq($s['id'], false, false, false, $sort, $order);
                 
                 $results .= '<div id="dsfaq_add_q_'.$s['id'].'" class="dsfaq_name_faq_quest_add">';
-                $results .= '<a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.$s['id'].'\',\''.$s['id'].'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq').'</a>';
+                $results .= '<a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.$s['id'].'\',\''.$s['id'].'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq-plus').'</a>';
                 $results .= '</div>';
                 $results .= '</div>';
             }
@@ -1777,11 +1777,11 @@ echo "        </div>";
 //                $results .= '</td><td width="100" align="center" id="dsfaq_edit_link_'.$s['id'].'">';
                 $results .= '</td><td width="60" align="center" id="dsfaq_edit_link_'.$s['id'].'">';
 
-                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; edit_quest('.$s['id'].');"><span class="button">'.__('Edit', 'wp-ds-faq').'</span></a>';
+                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; edit_quest('.$s['id'].');"><span class="button">'.__('Edit', 'wp-ds-faq-plus').'</span></a>';
 
 		// 削除は一番右端にもっていこう
 //               $results .= '</td><td width="120" align="center">';
- //               $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_quest('.$s['id'].');"><span class="button">'.__('Delete&nbsp;question', 'wp-ds-faq').'</span></a>';
+ //               $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_quest('.$s['id'].');"><span class="button">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</span></a>';
 
 		// 2011.03.18: WordpressはUTCというタイムゾーンになっている。よって表示するときに直さねばならない
 		// 2011.09.07 (1.0.13): WordpressはUTCをセットして、date_i18nでローカナイズしていることを発見。これを使う
@@ -1804,17 +1804,17 @@ echo "        </div>";
 
 			// 2011.08.25 (1.0.11) Limitation by settings
 		    if( ! $settings['wp_dsfaq_plus_disable_all_delete'] && ! $settings['wp_dsfaq_plus_disable_edit_delete']){
-		        $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_quest('.$s['id'].');"><span class="button">'.__('Delete&nbsp;question', 'wp-ds-faq').'</span></a>';
+		        $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_quest('.$s['id'].');"><span class="button">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</span></a>';
 		    }else if($this->settings_admin_permission && ! $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin']){
-		        $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_quest('.$s['id'].');"><span class="button">'.__('Delete&nbsp;question', 'wp-ds-faq').'</span></a>';
+		        $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_quest('.$s['id'].');"><span class="button">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</span></a>';
 		    }else 
-		    	$results .= '<input type="button" name="dummy_button" class="button" value="'.__('Delete&nbsp;question', 'wp-ds-faq').'" disabled/>';
+		    	$results .= '<input type="button" name="dummy_button" class="button" value="'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'" disabled/>';
 		        
                 $results .= '</td></tr></table>';
                 $results .= '</div>'  ;
 
                if(isset($quest) and $quest != false){
-                    $results .= '<div id="dsfaq_add_q_'.$id_book.'" class="dsfaq_name_faq_quest_add"><a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.$s['id_book'].'\',\''.$s['id_book'].'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq').'</a></div>';
+                    $results .= '<div id="dsfaq_add_q_'.$id_book.'" class="dsfaq_name_faq_quest_add"><a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.$s['id_book'].'\',\''.$s['id_book'].'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq-plus').'</a></div>';
                 }
            }
         }else{
