@@ -48,13 +48,13 @@ if (isset($_POST['dsfaq_plus_mode_csrf_ticket']) && isset($_SESSION['csrf_ticket
 エスケープの解除 2011.03.15
  $flag = mysql escape, $opt = 'を削除（addcslashes対策）
  $resultsで纏めてjavascriptコードが書かれており、最後にaddcslashes()が必要（主に'のエスケープ）。しかしDBの'じゃエスケープされてしまっている。よって'が二重にエスケープされてしまう問題がある。
- 解決方法は、一旦エスケープを全部解除して、改めてmysql_real_escape_stringをする。SQL命令のときはこれでいくとして、$resultsのときには、'のみエスケープを解除しとくという面倒なことが必要だ。そのための関数を下記に作っておく。
+ 解決方法は、一旦エスケープを全部解除して、改めてk_escapeをする。SQL命令のときはこれでいくとして、$resultsのときには、'のみエスケープを解除しとくという面倒なことが必要だ。そのための関数を下記に作っておく。
 
 [English]
 Unescape funtion on March 15, 2011
   $flag = escape for mysql DB, $opt = remove the escape for ' (single quotation).
   - Issue: $result element includes Javascript code. Therefore, ' (single quotation) needs to be escaped. However, the DB data was already escaped, so $result element is escaped over again. 
-  - Solution: all elements are unescaped and are escaped by using  mysql_real_escape_string. In case of the element for Javascript ($results), ' (single quotation) is unescaped in the element. Of course, the element is escaped by using addcslashes();
+  - Solution: all elements are unescaped and are escaped by using  k_escape. In case of the element for Javascript ($results), ' (single quotation) is unescaped in the element. Of course, the element is escaped by using addcslashes();
 
 */
 
@@ -63,7 +63,7 @@ function k_escape($str, $flag=false, $opt=false){
   $str = stripslashes($str);
   
   if ($flag){
-	$str = mysql_real_escape_string($str);
+	$str = esc_sql($str);
   }
   if ($opt){
 	$str = str_replace("\\'","\'",$str);
@@ -153,10 +153,10 @@ switch($_POST['action']) {
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
 
 
-        if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == "" ){ error(); }
+        if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == "" ){ error("POST: dsfaq_quest error. "); }
         $dsfaq_quest = $_POST['dsfaq_quest']; 
 
-        if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == "" ){ error(); }
+        if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == "" ){ error("POST: dsfaq_answer error. "); }
         $dsfaq_answer = $_POST['dsfaq_answer']; 
         
         $sql = "SELECT * FROM `".$table_quest."` WHERE `id_book` = '".$id."' ORDER BY `sort` DESC LIMIT 1";
@@ -185,7 +185,7 @@ switch($_POST['action']) {
         break;
 
     case 'delete_quest':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in delete_quest. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
 
@@ -225,7 +225,7 @@ switch($_POST['action']) {
         break;
         
     case 'edit_quest':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in edit_quest. "); }
 //        (int)$id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
        
@@ -255,7 +255,7 @@ switch($_POST['action']) {
         break;
         
     case 'front_edit_quest':
-        if(!isset($_POST['id']) || $_POST['id'] == "" ){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == "" ){ error("POST: id error in front_edit_quest. "); }
 //        (int)$id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
       
@@ -279,7 +279,7 @@ switch($_POST['action']) {
         break;
         
     case 'front_cancel_edit':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in front_cancel_edit. "); }
 //        (int)$id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
       
@@ -318,18 +318,18 @@ switch($_POST['action']) {
         break;
 
     case 'update_quest':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in update_quest. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
         
-        if(!isset($_POST['id_book']) || $_POST['id_book'] == ""){ error(); }
+        if(!isset($_POST['id_book']) || $_POST['id_book'] == ""){ error("POST: id_book error in update_quest. "); }
 //        $id_book = $_POST['id_book'];
         $id_book = (int) $_POST['id_book']; if(!is_int($id_book)){ break; }  // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
         
-        if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == ""){ error("POST: dsfaq_quest error in update_quest. "); }
         $dsfaq_quest = $_POST['dsfaq_quest'];
 
-        if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == ""){ error("POST: dsfaq_answer error in update_quest. "); }
         $dsfaq_answer = $_POST['dsfaq_answer'];
         
         $sql = "UPDATE ".$table_quest." SET date='".date("Y-m-d-H-i-s")."', quest='".$dsfaq_quest."', answer='".$dsfaq_answer."' WHERE id='".$id."'";
@@ -365,14 +365,14 @@ switch($_POST['action']) {
         break;
         
     case 'front_update_quest':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in front_update_quest. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
       
-        if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == ""){ error("POST: dsfaq_quest error in front_update_quest. "); }
         $dsfaq_quest = $_POST['dsfaq_quest'];
 
-        if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == "") error();
+        if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == "") error("POST: dsfaq_answer error in front_update_quest. ");
         $dsfaq_answer = $_POST['dsfaq_answer'];
         
         $sql = "UPDATE ".$table_quest." SET date='".date("Y-m-d-H-i-s")."', quest='".$dsfaq_quest."', answer='".$dsfaq_answer."' WHERE id='".$id."'";
@@ -416,12 +416,12 @@ switch($_POST['action']) {
         break;
     
     case 'q_change':
-        if(!isset($_POST['to']) || $_POST['to'] == ""){ error(); }
+        if(!isset($_POST['to']) || $_POST['to'] == ""){ error("POST: to error in q_change. "); }
         $to = $_POST['to'];
-        if(!isset($_POST['id_book']) || $_POST['id_book'] == ""){ error(); }
+        if(!isset($_POST['id_book']) || $_POST['id_book'] == ""){ error("POST: id_book error in q_change. "); }
 //      $id_book = $_POST['id_book'];
         $id_book = (int) $_POST['id_book']; if(!is_int($id_book)){ break; }  // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in q_change. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
         
@@ -464,16 +464,16 @@ switch($_POST['action']) {
         break;
         
     case 'save_settings':
-        if(!isset($_POST['dsfaq_h1']) || $_POST['dsfaq_h1'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_h1']) || $_POST['dsfaq_h1'] == ""){ error("POST: dsfaq_h1 error in save_settings. "); }
         $dsfaq_h1 = $_POST['dsfaq_h1'];
         
-        if(!isset($_POST['dsfaq_h2']) || $_POST['dsfaq_h2'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_h2']) || $_POST['dsfaq_h2'] == ""){ error("POST: dsfaq_h2 error in save_settings. "); }
         $dsfaq_h2 = $_POST['dsfaq_h2']; 
         
-        if(!isset($_POST['dsfaq_css']) || $_POST['dsfaq_css'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_css']) || $_POST['dsfaq_css'] == ""){ error("POST: dsfaq_css error in save_settings. "); }
         $dsfaq_css = $_POST['dsfaq_css'];
         
-        if(!isset($_POST['dsfaq_copyr']) || $_POST['dsfaq_copyr'] == ""){ error(); }
+        if(!isset($_POST['dsfaq_copyr']) || $_POST['dsfaq_copyr'] == ""){ error("POST: dsfaq_copyr error in save_settings. "); }
         $dsfaq_copyr = $_POST['dsfaq_copyr'];
         
         if($dsfaq_copyr == 'true'){
@@ -493,7 +493,7 @@ switch($_POST['action']) {
         break;
     
     case 'edit_name_book':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in edit_name_book. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
         
@@ -509,11 +509,11 @@ switch($_POST['action']) {
         break;
         
     case 'save_name_book':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in save_name_book. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
 
-        if(!isset($_POST['name_book']) || $_POST['name_book'] == ""){ error(); }
+        if(!isset($_POST['name_book']) || $_POST['name_book'] == ""){ error("POST: name_book error in save_name_book. "); }
         $name_book = $_POST['name_book'];
         
         $sql = "UPDATE ".$table_name." SET name_faq='".$name_book."' WHERE id='".$id."'";
@@ -525,11 +525,11 @@ switch($_POST['action']) {
         break;
         
     case 'change_faqdisplay':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in change_faqdisplay. "); }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.12: 2011.08.29)
 
-        if(!isset($_POST['mode']) || $_POST['mode'] == ""){ error(); }
+        if(!isset($_POST['mode']) || $_POST['mode'] == ""){ error("POST: mode error in change_faqdisplay. "); }
 //        $mode = $_POST['mode'];
         $mode = (int) $_POST['mode']; if(!is_int($mode)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
 
@@ -698,7 +698,7 @@ switch($_POST['action']) {
 
 
     case 'open_quest':
-        if(!isset($_POST['id']) || $_POST['id'] == ""){ error(); }
+        if(!isset($_POST['id']) || $_POST['id'] == ""){ error("POST: id error in open_quest. ");; }
 //        $id = $_POST['id'];
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
 

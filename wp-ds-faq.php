@@ -3,7 +3,7 @@
 Plugin Name: WP DS FAQ Plus
 Plugin URI: http://kitaney.jp/~kitani/tools/wordpress/wp-ds-faq-plus_en.html
 Description: WP DS FAQ Plus is the expand of WP DS FAQ  plugin. The plugin bases on WP DS FAQ 1.3.3. This plugin includes the fixed some issues (Quotation and Security, such as SQL Injection and CSRF. ) , Japanese translation, improvement of interface, and SSL Admin setting.
-Version: 1.2.5
+Version: 1.2.7
 Author: Kimiya Kitani
 Author URI: https://profiles.wordpress.org/kimipooh/
 Text Domain: wp-ds-faq-plus
@@ -62,7 +62,7 @@ class dsfaq{
         $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_db_ver']   = '0.1'; // 2011.08.29 (1.0.12) Add custom_mode to dsfaq_name table for custom sort.
         $this->wp_ds_faq_default_array['wp_ds_faq_showcopyright'] = true;
         $this->wp_ds_faq_default_array['wp_ds_faq_ver']           = '133'; // 2011.08.22 (1.0.10): Change 132 to 133
-        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1350'; // 2011.08.29 (1.0.12): Version 
+        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1270'; // 2011.08.29 (1.0.12): Version 
         $this->wp_ds_faq_default_array['wp_ds_faq_h1']            = '<h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_h2']            = '</h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_css']           = "<style type='text/css'>\n".
@@ -111,7 +111,7 @@ class dsfaq{
                     `mode` INT NOT NULL ,
                     `custom_mode` INT NOT NULL ,
                     `visible` INT NOT NULL ,
-                     PRIMARY KEY ( `id` )
+                     PRIMARY KEY  ( `id` )
                      ) ENGINE = MYISAM DEFAULT CHARSET=utf8 ';
             dbDelta($sql);
 
@@ -123,7 +123,7 @@ class dsfaq{
                     `quest` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
                     `answer` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
                     `sort` INT NOT NULL,
-                     PRIMARY KEY ( `id` )
+                     PRIMARY KEY  ( `id` )
                      ) ENGINE = MYISAM DEFAULT CHARSET=utf8 '; 
             dbDelta($sql);
 
@@ -147,7 +147,7 @@ class dsfaq{
 
     	    if($select){
         	    foreach ($select as $rows=>$data) {
-        	    	$mode = (int) mysql_real_escape_string($data['mode']);
+        	    	$mode = (int) k_escape($data['mode']);
         	    	$sort = $order = 0;
         	    	if(!is_int($mode) || $mode < 0) $mode = 0;
         	    	else if($mode >= 10){
@@ -164,8 +164,8 @@ class dsfaq{
         	    	// modeデータをmode_cunstomにコピーし、カスタムしたmodeデータを元に戻し、modeを差し替える
 			        // visibleの初期値は1（default value of visible is 1. All FAQ is published. (2011.09.07: 1.0.13)
         			// In case of displaying latest FAQ ([dsfaq latest=10 /]), you may have invisible data.
-	       			$sql = "UPDATE `".$table_name."` SET `visible`='1',`mode`='".$mode."',`custom_mode`='". $custom_mode ."' WHERE `id`='".mysql_real_escape_string($data['id'])."'"; 
-//	       			$sql = "UPDATE `".$table_name."` SET `mode`='".$mode."',`custom_mode`='". $custom_mode ."' WHERE `id`='".mysql_real_escape_string($data['id'])."'"; 
+	       			$sql = "UPDATE `".$table_name."` SET `visible`='1',`mode`='".$mode."',`custom_mode`='". $custom_mode ."' WHERE `id`='".k_escape($data['id'])."'"; 
+//	       			$sql = "UPDATE `".$table_name."` SET `mode`='".$mode."',`custom_mode`='". $custom_mode ."' WHERE `id`='".k_escape($data['id'])."'"; 
 
 	       			
 		            $wpdb->query( $sql ); 
@@ -181,7 +181,7 @@ class dsfaq{
 
     	    if($select){
         	    foreach ($select as $rows=>$data) {
-			       	$sql = "UPDATE `".$table_name."` SET `visible`='1' WHERE `id`='".mysql_real_escape_string($data['id'])."'"; 
+			       	$sql = "UPDATE `".$table_name."` SET `visible`='1' WHERE `id`='".k_escape($data['id'])."'"; 
 				    $wpdb->query( $sql ); 	
 				}
 			}
@@ -758,7 +758,9 @@ class dsfaq{
 		// ヘッダとカスケード（CSS）設定が保存や復元できなくなっていた件の修正 1.0.16: 2013.01.10
 		// 1.0.11からの問題で下記のJavaScriptが抜けていた。
         // use JavaScript SACK library for Ajax
-        wp_print_scripts( array( 'sack' ));
+//       wp_print_scripts( array( 'sack' ));
+       wp_enqueue_scripts( 'sack' ); // 2016.05.04
+
 ?>
         <script>
         //<![CDATA[
@@ -1485,7 +1487,7 @@ echo "        </div>";
         global $wpdb;
         $table_name = $wpdb->prefix."dsfaq_name";
         // 2011.09.06 (1.0.13): Security fix
-		if($flag != false) $flag = mysql_real_escape_string($flag);
+		if($flag != false) $flag = k_escape($flag);
 		if($id != false) $id = (int) $id;
 
 		// 2011.08.25 (1.0.11) get options
