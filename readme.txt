@@ -2,8 +2,8 @@
 Contributors: kimipooh
 Tags: faq, answer, question, documentation, pages, page, ajax
 Requires at least: 3.0
-Tested up to: 4.8
-Stable tag: 1.2.10
+Tested up to: 4.9
+Stable tag: 1.3
 
 WP DS FAQ Plus is the plugin which was improved based on WP DS FAQ 1.3.3. 
  
@@ -46,6 +46,10 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 5. Edit Menu.
 
 == Changelog ==
+
+= 1.3 =
+- Tested up to WordPress 4.9.
+- Fixed the background color in the admin menu.
 
 = 1.2.10 =
 - Tested up to WordPress 4.8 and PHP 7.1
