@@ -73,13 +73,13 @@ span.button{
 
 /* 2011.08.26 (1.0.11) */
 /* 2017.11.11 (1.2.11) */
-/*
 div#wp_ds_faq_plus_admin_menu{
    padding-top: 1em;
    padding-left: 1em;
-   background: #f1f1f1;   
+   background: #f1f1f1;
+   font-family: none !important; 
 }
-*/
+
 div#wp_ds_faq_plus_admin_menu ul{
   margin-left: 1em;
   margin-right: 1em;
