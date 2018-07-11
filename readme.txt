@@ -1,9 +1,12 @@
 === WP DS FAQ Plus ===
 Contributors: kimipooh
 Tags: faq, answer, question, documentation, pages, page, ajax
-Requires at least: 3.0
-Tested up to: 4.9
-Stable tag: 1.3
+Requires at least: 4.0
+Tested up to: 5.0
+Requires PHP: 5.6
+Stable tag: 1.4.0
+License: GPL v2  or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 WP DS FAQ Plus is the plugin which was improved based on WP DS FAQ 1.3.3. 
  
@@ -47,7 +50,10 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 
 == Changelog ==
 
-= 1.3 =
+= 1.4.0 =
+- Tested up to WordPress 5.0 and PHP 7.2.
+
+= 1.3.0 =
 - Tested up to WordPress 4.9.
 - Fixed the background color in the admin menu.
 
