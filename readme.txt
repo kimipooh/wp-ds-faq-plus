@@ -2,9 +2,9 @@
 Contributors: kimipooh
 Tags: faq, answer, question, documentation, pages, page, ajax
 Requires at least: 4.0
-Tested up to: 5.0
+Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPL v2  or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,8 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 5. Edit Menu.
 
 == Changelog ==
+= 1.4.1 =
+- Tested up to WordPress 5.2.2 and PHP 7.3
 
 = 1.4.0 =
 - Tested up to WordPress 5.0 and PHP 7.2.
