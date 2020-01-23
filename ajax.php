@@ -78,8 +78,8 @@ if(!isset($_POST['action'])){
 
 global $wpdb, $dsfaq;
 $escape      = "\\'\\\/\x08\x0C\n\r\x09"; // Kitani: \x09 = TAB, \x08 = BackScape, \x0C = \f：http://ja.wikipedia.org/wiki/ASCII
-$table_name  = $wpdb->prefix."dsfaq_name";
-$table_quest = $wpdb->prefix."dsfaq_quest";
+$table_name  = esc_sql($wpdb->prefix)."dsfaq_name";
+$table_quest = esc_sql($wpdb->prefix)."dsfaq_quest";
 
 // 2011.08.25 (1.0.11) get options
 $settings = get_option('wp_ds_faq_array');
@@ -101,7 +101,7 @@ foreach($_POST as $key=>$value){
 switch($_POST['action']) {
     case 'add_faq':
         if(!isset($_POST['input_faq']) || $_POST['input_faq'] == ""){ error("No input a FAQ name"); }
-        $input_faq = $_POST['input_faq'];
+        $input_faq = strip_tags($_POST['input_faq']);
 	   
         // Надо будет избавиться от двух одинаковых обращений к БД. Хватит и одного.
         if(!$dsfaq->get_faq_book($input_faq, false, false)){
@@ -154,10 +154,10 @@ switch($_POST['action']) {
 
 
         if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == "" ){ error("POST: dsfaq_quest error. "); }
-        $dsfaq_quest = $_POST['dsfaq_quest']; 
+        $dsfaq_quest = strip_tags($_POST['dsfaq_quest']); 
 
         if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == "" ){ error("POST: dsfaq_answer error. "); }
-        $dsfaq_answer = $_POST['dsfaq_answer']; 
+        $dsfaq_answer = wp_kses_post($_POST['dsfaq_answer']); 
         
         $sql = "SELECT * FROM `".$table_quest."` WHERE `id_book` = '".$id."' ORDER BY `sort` DESC LIMIT 1";
         $results = $wpdb->get_results($sql, ARRAY_A);
@@ -237,11 +237,11 @@ switch($_POST['action']) {
             $results .= '<div id="dsfaq_idquest_edit_'.$id.'" class="dsfaq_idquest_edit">';
             $results .= '<br>';
             $results .= '<p>'.__('Question:', 'wp-ds-faq').'</p>';
-            $results .= '<input id="dsfaq_quest" type="text" value="'.str_replace('"', '&quot;', k_escape($s['quest'],false,true)).'" />';
+            $results .= '<input id="dsfaq_quest" type="text" value="'.str_replace('"', '&quot;', strip_tags($s['quest'])).'" />';
             $results .= '<p>'.__('Answer:', 'wp-ds-faq').'</p>';
-            $results .= '<textarea id="dsfaq_answer" rows="10" cols="45" name="text">'.k_escape($s['answer'],false,true).'</textarea><br>';
+            $results .= '<textarea id="dsfaq_answer" rows="10" cols="45" name="text">'.wp_kses_post($s['answer']).'</textarea><br>';
             $results .= '<p class="dsfaq_drv">';
-            $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$dsfaq->plugurl.'img/ajax-loader.gif>\'; update_quest('.k_escape($s['id'],false,true).', '.$s['id_book'].');"><span class="button">'.__('Save', 'wp-ds-faq').'</span></a>';
+            $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$dsfaq->plugurl.'img/ajax-loader.gif>\'; update_quest('.k_escape($s['id'],false,true).', '.esc_attr($s['id_book']).');"><span class="button">'.__('Save', 'wp-ds-faq').'</span></a>';
             $results .= ' &nbsp; ';
             $results .= '<a href="#_" onclick="cancel_edit(\''.$id.'\', \'dsfaq_idquest_edit_'.$id.'\');" class="button">'.__('Cancel', 'wp-ds-faq').'</a>';
             $results .= '</p>';
@@ -263,8 +263,8 @@ switch($_POST['action']) {
         $select = $wpdb->get_results($sql, ARRAY_A);
 
         foreach ($select as $s) {          
-            $front_input_quest = '<input style="width: 100%;" id="dsfaq_inp_quest_'.$id.'" type="text" value="'.str_replace('"', '&quot;', k_escape($s['quest'],false,true)).'" />';
-            $front_textarea_answer = '<textarea style="width: 100%;" id="dsfaq_txt_answer_'.$id.'" rows="10" cols="45">'.k_escape($s['answer'],false,true).'</textarea>';
+            $front_input_quest = '<input style="width: 100%;" id="dsfaq_inp_quest_'.$id.'" type="text" value="'.str_replace('"', '&quot;', strip_tags($s['quest'])).'" />';
+            $front_textarea_answer = '<textarea style="width: 100%;" id="dsfaq_txt_answer_'.$id.'" rows="10" cols="45">'.wp_kses_post($s['answer']).'</textarea>';
             $front_tools  = '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$dsfaq->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_update_quest('.k_escape($s['id'],false,true).');">'.__('Save', 'wp-ds-faq').'</a> ]';
             $front_tools .= '[ <a href="#_" onclick="dsfaq_front_cancel_edit(\''.$id.'\');">'.__('Cancel', 'wp-ds-faq').'</a> ]';
         }
@@ -288,8 +288,8 @@ switch($_POST['action']) {
         
         $results = '';
         foreach ($select as $s) {
-            $front_input_quest = k_escape($s['quest'],false,true);
-            $front_textarea_answer = '<div class="dsfaq_answer">'.k_escape($s['answer'],false,true);
+            $front_input_quest = strip_tags($s['quest']);
+            $front_textarea_answer = '<div class="dsfaq_answer">'.wp_kses_post($s['answer']);
 			// 2011.08.25 (1.0.11) Limitation by settings and current user permission
 //            if(current_user_can('level_10')){
 			if($settings_editor_permission){
@@ -327,10 +327,10 @@ switch($_POST['action']) {
         $id_book = (int) $_POST['id_book']; if(!is_int($id_book)){ break; }  // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
         
         if(!isset($_POST['dsfaq_quest']) || $_POST['dsfaq_quest'] == ""){ error("POST: dsfaq_quest error in update_quest. "); }
-        $dsfaq_quest = $_POST['dsfaq_quest'];
+        $dsfaq_quest = strip_tags($_POST['dsfaq_quest']);
 
         if(!isset($_POST['dsfaq_answer']) || $_POST['dsfaq_answer'] == ""){ error("POST: dsfaq_answer error in update_quest. "); }
-        $dsfaq_answer = $_POST['dsfaq_answer'];
+        $dsfaq_answer = wp_kses_post($_POST['dsfaq_answer']);
         
         $sql = "UPDATE ".$table_quest." SET date='".date("Y-m-d-H-i-s")."', quest='".$dsfaq_quest."', answer='".$dsfaq_answer."' WHERE id='".$id."'";
         $results = $wpdb->query( $sql );
@@ -347,7 +347,7 @@ switch($_POST['action']) {
                 $results .= '<a href="#_" onclick="dsfaq_q_change(\'down\', \''.k_escape($s['id_book'],false,true).'\', \''.k_escape($s['id'],false,true).'\');"><img src="'.$dsfaq->plugurl.'img/down.gif" width="8" height="8"></a>';
                 $results .= '</td>';
                 $results .= '<td>';
-                $results .= k_escape($s['quest'],false,true);
+                $results .= strip_tags($s['quest']);
                 $results .= '</td><td width="120" align="center" id="dsfaq_edit_link_'.k_escape($s['id'],false,true).'">';
                 $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$dsfaq->plugurl.'img/ajax-loader.gif>\'; edit_quest('.k_escape($s['id'],false,true).');"><span class="button">'.__('Edit', 'wp-ds-faq').'</span></a>';
                 $results .= '</td><td width="120" align="center">';
@@ -384,8 +384,8 @@ switch($_POST['action']) {
             
             $results = '';
             foreach ($select as $s) {
-                $front_input_quest = k_escape($s['quest'],false,true);
-                $front_textarea_answer = '<div class="dsfaq_answer">'.k_escape($s['answer'],false,true);
+                $front_input_quest = strip_tags($s['quest']);
+                $front_textarea_answer = '<div class="dsfaq_answer">'.wp_kses_post($s['answer']);
 			// 2011.08.25 (1.0.11) Limitation by settings and current user permission
 //            if(current_user_can('level_10')){
 				if($settings_editor_permission){
@@ -427,7 +427,7 @@ switch($_POST['action']) {
         
         $sql = "SELECT `sort` FROM `".$table_quest."` WHERE `id` = '".$id."'";
         $select = $wpdb->get_results($sql, ARRAY_A);
-        $sort = $select['0']['sort'];
+        $sort = esc_sql($select['0']['sort']);
         
         if($to == "up"){  $sql = "SELECT * FROM `".$table_quest."` WHERE `id_book` = '".$id_book."' AND `sort` < ".$sort." ORDER BY `sort` DESC LIMIT 1";}
         if($to == "down"){$sql = "SELECT * FROM `".$table_quest."` WHERE `id_book` = '".$id_book."' AND `sort` > ".$sort." ORDER BY `sort` ASC  LIMIT 1";}
@@ -437,8 +437,8 @@ switch($_POST['action']) {
         if($results){
             $q_id_curent   = $id;
             $q_sort_curent = $sort;
-            $q_id_change   = $results['0']['id'];
-            $q_sort_change = $results['0']['sort'];
+            $q_id_change   = esc_sql($results['0']['id']);
+            $q_sort_change = esc_sql($results['0']['sort']);
             
             $sql = "UPDATE ".$table_quest." SET sort='".$q_sort_change."' WHERE id='".$q_id_curent."'";
             $results = $wpdb->query( $sql );
@@ -451,7 +451,7 @@ switch($_POST['action']) {
                 da.parentNode.insertBefore(da, db);\n
                 dsfaq_bg_color ('dsfaq_idquest_".$q_id_curent."', 'dsfaq_idquest_".$q_id_change."');" );
             }
-            if($to == 'down'){
+            else if($to == 'down'){
                 die( "da = document.getElementById('dsfaq_idquest_".$q_id_curent."');\n
                 db = document.getElementById('dsfaq_idquest_".$q_id_change."');\n
                 db.parentNode.insertBefore(db, da);\n
@@ -499,7 +499,7 @@ switch($_POST['action']) {
         
         $select = $dsfaq->get_faq_book(false, $id, true);
         
-        $name_faq = $select[0]['name_faq'];
+        $name_faq = strip_tags($select[0]['name_faq']);
         $name_faq = addcslashes($name_faq, $escape);
         $name_faq = str_replace('"', '&quot;', $name_faq);
 	            
@@ -514,7 +514,7 @@ switch($_POST['action']) {
         $id = (int) $_POST['id']; if(!is_int($id)){ break; }   // fixed by WP DS FAQ 1.3.3 (1.0.10: 2011.08.22)
 
         if(!isset($_POST['name_book']) || $_POST['name_book'] == ""){ error("POST: name_book error in save_name_book. "); }
-        $name_book = $_POST['name_book'];
+        $name_book = strip_tags($_POST['name_book']);
         
         $sql = "UPDATE ".$table_name." SET name_faq='".$name_book."' WHERE id='".$id."'";
         $results = $wpdb->query( $sql );
@@ -704,7 +704,7 @@ switch($_POST['action']) {
 
         $sql = "SELECT `answer` FROM `".$table_quest."` WHERE `id` = '".$id."'";
         $select = $wpdb->get_results($sql, ARRAY_A);
-        $answer = k_escape($select[0]['answer'],false, true);
+        $answer = wp_kses_post($select[0]['answer']);
         
         $results = '';
         $results .= '<div class="dsfaq_answer">';

@@ -3,7 +3,7 @@
 Plugin Name: WP DS FAQ Plus
 Plugin URI: http://kitaney.jp/~kitani/tools/wordpress/wp-ds-faq-plus_en.html
 Description: WP DS FAQ Plus is the expand of WP DS FAQ  plugin. The plugin bases on WP DS FAQ 1.3.3. This plugin includes the fixed some issues (Quotation and Security, such as SQL Injection and CSRF. ) , Japanese translation, improvement of interface, and SSL Admin setting.
-Version: 1.4.1
+Version: 1.4.2
 Author: Kimiya Kitani
 Author URI: https://profiles.wordpress.org/kimipooh/
 Text Domain: wp-ds-faq-plus
@@ -62,7 +62,7 @@ class dsfaq{
         $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_db_ver']   = '0.1'; // 2011.08.29 (1.0.12) Add custom_mode to dsfaq_name table for custom sort.
         $this->wp_ds_faq_default_array['wp_ds_faq_showcopyright'] = true;
         $this->wp_ds_faq_default_array['wp_ds_faq_ver']           = '133'; // 2011.08.22 (1.0.10): Change 132 to 133
-        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1410'; // 2011.08.29 (1.0.12): Version 
+        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1420'; // 2011.08.29 (1.0.12): Version 
         $this->wp_ds_faq_default_array['wp_ds_faq_h1']            = '<h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_h2']            = '</h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_css']           = "<style type='text/css'>\n".
@@ -164,7 +164,7 @@ class dsfaq{
         	    	// modeデータをmode_cunstomにコピーし、カスタムしたmodeデータを元に戻し、modeを差し替える
 			        // visibleの初期値は1（default value of visible is 1. All FAQ is published. (2011.09.07: 1.0.13)
         			// In case of displaying latest FAQ ([dsfaq latest=10 /]), you may have invisible data.
-	       			$sql = "UPDATE `".$table_name."` SET `visible`='1',`mode`='".$mode."',`custom_mode`='". $custom_mode ."' WHERE `id`='".k_escape($data['id'])."'"; 
+	       			$sql = "UPDATE `".esc_sql($table_name)."` SET `visible`='1',`mode`='".esc_sql($mode)."',`custom_mode`='". esc_sql($custom_mode) ."' WHERE `id`='".esc_sql($data['id'])."'"; 
 //	       			$sql = "UPDATE `".$table_name."` SET `mode`='".$mode."',`custom_mode`='". $custom_mode ."' WHERE `id`='".k_escape($data['id'])."'"; 
 
 	       			
@@ -176,12 +176,12 @@ class dsfaq{
         // In case of displaying latest FAQ ([dsfaq latest=10 /]), you may have invisible data.
    		if( $settings['wp_ds_faq_plus_ver'] < 1013){
         	$table_name = $wpdb->prefix."dsfaq_name";
-	        $sql = "SELECT * FROM `".$table_name."`"; 
+	        $sql = "SELECT * FROM `".esc_sql($table_name)."`"; 
 	        $select = $wpdb->get_results($sql, ARRAY_A);
 
     	    if($select){
         	    foreach ($select as $rows=>$data) {
-			       	$sql = "UPDATE `".$table_name."` SET `visible`='1' WHERE `id`='".k_escape($data['id'])."'"; 
+			       	$sql = "UPDATE `".esc_sql($table_name)."` SET `visible`='1' WHERE `id`='".esc_sql($data['id'])."'"; 
 				    $wpdb->query( $sql ); 	
 				}
 			}
@@ -537,7 +537,7 @@ class dsfaq{
             if($mode == "0"){  // 2011.07.19: 1.0.9 for sort
                 if(is_array($quest)){
                     $results .= '<ol class="dsfaq_ol_quest">';
-                    foreach ($quest as $s) { $results .= '<li id="dsfaq_li_'.$s['id'].'"><a href="#'.$s['id'].'">'.$s['quest'].'</a></li>'; }
+                    foreach ($quest as $s) { $results .= '<li id="dsfaq_li_'.esc_attr($s['id']).'"><a href="#'.esc_attr($s['id']).'">'.strip_tags($s['quest']).'</a></li>'; }
 
   			    	// 2011.08.25 (1.0.11) Linkage of WP-PostRatings Plugin (Please see settings).
 		        	if(!empty($quest)){
@@ -551,24 +551,24 @@ class dsfaq{
 
 
                     foreach ($quest as $s) {
-                        $results .= '<div class="dsfaq_qa_block" id="dsfaq_qa_block_'.$s['id'].'">';
-                        $results .= '<p><a name="'.$s['id'].'"></a><span class="dsfaq_quest_title">'.__('Question:', 'wp-ds-faq-plus').'</span> <span class="dsfaq_quest" id="dsfaq_quest_'.$s['id'].'">'.$s['quest'].'</span></p>';
+                        $results .= '<div class="dsfaq_qa_block" id="dsfaq_qa_block_'.esc_attr($s['id']).'">';
+                        $results .= '<p><a name="'.esc_attr($s['id']).'"></a><span class="dsfaq_quest_title">'.__('Question:', 'wp-ds-faq-plus').'</span> <span class="dsfaq_quest" id="dsfaq_quest_'.esc_attr($s['id']).'">'.strip_tags($s['quest']).'</span></p>';
                         $results .= '<p><span class="dsfaq_answer_title">'.__('Answer:', 'wp-ds-faq-plus').'</span></p>';
-                        $results .= '<div id="dsfaq_answer_'.$s['id'].'"><div class="dsfaq_answer">';
-                        $results .= $s['answer'];					
+                        $results .= '<div id="dsfaq_answer_'.esc_attr($s['id']).'"><div class="dsfaq_answer">';
+                        $results .= wp_kses_post($s['answer']);					
                         $results .= '</div></div>';
 
 						// 2011.08.25 (1.0.11) Limitation by settings and current user permission
 						//            if(current_user_can('level_10')){
 						if($this->settings_editor_permission){
-                            $results .= '<div class="dsfaq_tools" id="dsfaq_tools_'.$s['id'].'">';
-                            $results .= '[ <a href="#_" onclick="dsfaq_front_edit_quest('.$s['id'].');">'.__('Edit', 'wp-ds-faq-plus').'</a> ]'; 
+                            $results .= '<div class="dsfaq_tools" id="dsfaq_tools_'.esc_attr($s['id']).'">';
+                            $results .= '[ <a href="#_" onclick="dsfaq_front_edit_quest('.esc_attr($s['id']).');">'.__('Edit', 'wp-ds-faq-plus').'</a> ]'; 
 							// 2011.03.31: disabled because for to enable it is the high risk. By Kitani.
 							// 2011.08.25 (1.0.11) Limitation by settings and current user permission
 							if (! $settings['wp_dsfaq_plus_disable_all_delete'] && ! $settings['wp_dsfaq_plus_disable_frontedit_delete'])
-                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.$s['id'].');">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</a> ]';
+                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.esc_attr($s['id']).');">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</a> ]';
 							else if($this->settings_admin_permission && ! $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin']){
-                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.$s['id'].');">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</a> ]';
+                            		$results .= '[ <a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_front_delete_quest('.esc_attr($s['id']).');">'.__('Delete&nbsp;question', 'wp-ds-faq-plus').'</a> ]';
                             }
                             $results .= '</div>';
                         }
@@ -584,9 +584,9 @@ class dsfaq{
                 if(is_array($quest)){
                     $results .= '<ol class="dsfaq_ol_quest">';
                     foreach ($quest as $s) { 
-                        $results .= '<li id="dsfaq_quest_'.$s['id'].'"><a href="#_" onclick="dsfaq_open_quest('.$s['id'].');">'.$s['quest'].'</a></li>';
-                        $results .= '<div id="dsfaq_answer_'.$s['id'].'"></div>';
-                        $results .= '<div class="dsfaq_tools" id="dsfaq_tools_'.$s['id'].'"></div>';
+                        $results .= '<li id="dsfaq_quest_'.esc_attr($s['id']).'"><a href="#_" onclick="dsfaq_open_quest('.esc_attr($s['id']).');">'.strig_tags($s['quest']).'</a></li>';
+                        $results .= '<div id="dsfaq_answer_'.esc_attr($s['id']).'"></div>';
+                        $results .= '<div class="dsfaq_tools" id="dsfaq_tools_'.esc_attr($s['id']).'"></div>';
                     }
 
   			       // 2011.08.25 (1.0.11) Linkage of WP-PostRatings Plugin (Please see settings).
@@ -663,7 +663,7 @@ class dsfaq{
 
 // 2011.08.22 (1.0.10): サブメニューは、名前順に並ぶように変更（ID順だと分かりづらい）
 //        $sql = "SELECT * FROM `".$table_name."` ORDER BY `id` ASC"; 
-        $sql = "SELECT * FROM `".$table_name."` ORDER BY `name_faq` ASC"; 
+        $sql = "SELECT * FROM `".esc_sql($table_name)."` ORDER BY `name_faq` ASC"; 
         $select = $wpdb->get_results($sql, ARRAY_A);
 
         if($select){
@@ -672,7 +672,7 @@ class dsfaq{
                 $sid = (int) $s['id']; // 2011.08.29 (1.0.12) セキュリティ対策
 //                if(is_int($sid) && $sid > 1)
                 if(is_int($sid) && $sid > 0) // 2011.09.13 (1.0.13) fix（最初のカテゴリーが表示されない問題）
-            	add_submenu_page(__FILE__, $s['name_faq'], $s['name_faq'], $permission, __FILE__.'&add_sub_id='.$sid, array(&$this, 'options_page'));
+            	add_submenu_page(__FILE__, strip_tags($s['name_faq']), strip_tags($s['name_faq']), $permission, __FILE__.'&add_sub_id='.$sid, array(&$this, 'options_page'));
             }
         }
     }
@@ -1378,7 +1378,7 @@ echo "        </div>";
 		
 		// 2011.09.14 (1.0.13) : スマートじゃないが、この時点では全データを取得しvisibleでphp側で制御（本当はsqlで制御したいが）
 //		$sql = "SELECT * FROM `".$table_name."` ORDER BY `date` DESC LIMIT ".$latest;
-		$sql = "SELECT * FROM `".$table_name."` ORDER BY `date` DESC";
+		$sql = "SELECT * FROM `".esc_sql($table_name)."` ORDER BY `date` DESC";
 
 //		$sql = "SELECT * FROM `".$table_name."` WHERE EXISTS(SELECT ".$wpdb->prefix."dsfaq_name.id,".$wpdb->prefix."dsfaq_name.visible FROM ".$wpdb->prefix."dsafaq_name WHERE ".$wpdb->prefix."dsfaq_name.visible = 1 AND ".$table_name.".id_book = ".$wpdb->prefix."dsfaq_name.id".")  ORDER BY `date` DESC LIMIT ".$latest;
 
@@ -1387,13 +1387,13 @@ echo "        </div>";
 
 		// 予め、$category[dsfaq_name[id]] = dsfaq_name[name_faq]; を作っておく
         $table_name = $wpdb->prefix."dsfaq_name";
-		$sql = "SELECT id,name_faq,visible FROM `".$table_name."` ";
+		$sql = "SELECT id,name_faq,visible FROM `".esc_sql($table_name)."` ";
         $c_name = $wpdb->get_results($sql, ARRAY_A);
 		$category = "";
 		$visible_status = "";
 		if($c_name){
 			foreach($c_name as $s){
-				$category[$s['id']] = $s['name_faq'];
+				$category[$s['id']] = strip_tags($s['name_faq']);
 				$visible = (int) $s['visible'];
 				if($visible != 0) $visible = 1;
 				$visible_status[$s['id']] = $visible;
@@ -1439,16 +1439,16 @@ echo "        </div>";
            		if($visible_status[$s['id_book']] == 0){
            			$i--;
            			if($this->settings_editor_permission){
-//            			$results .= '<li><span style="color:gray;">'.$this->convert_timezone_date($s['date']).': '.$s['quest'].' (<strong>'.$category[$s['id_book']].'</strong>)</span></li>';
+//            			$results .= '<li><span style="color:gray;">'.$this->convert_timezone_date($s['date']).': '.$s['quest'].' (<strong>'.strip_tags($category[$s['id_book']]).'</strong>)</span></li>';
 						$results .= str_replace('>', ' class="private">', $l_head); // 非公開分はグレーに
 //						$results .= $l_head;
 //						$results .= '<span style="color:gray;">';
 						$results .= $l_head_i . $this->convert_timezone_date($s['date']) .  $l_head_i_end;
 						if($latest_format == "table")
-							$results .= '<td class="category">'.$category[$s['id_book']].'</td>' . $l_content;
+							$results .= '<td class="category">'.strip_tags($category[$s['id_book']]).'</td>' . $l_content;
 						else
-							$results .= $l_content . '<strong>'.$category[$s['id_book']].'</strong> / ';
-						$results .= $s['quest'] . $l_content_end;
+							$results .= $l_content . '<strong>'.strip_tags($category[$s['id_book']]).'</strong> / ';
+						$results .= strip_tags($s['quest']) . $l_content_end;
 //           				$results .= '</span>';
            				$results .= $l_head_end . "\n";
 
@@ -1458,10 +1458,10 @@ echo "        </div>";
 					$results .= $l_head;
 					$results .= $l_head_i . $this->convert_timezone_date($s['date']) .  $l_head_i_end;
 					if($latest_format == "table")
-						$results .= '<td class="category">'.$category[$s['id_book']].'</td>' . $l_content;
+						$results .= '<td class="category">'.strip_tags($category[$s['id_book']]).'</td>' . $l_content;
 					else
-						$results .= $l_content . '<strong>'.$category[$s['id_book']].'</strong> / ';
-					$results .= $s['quest'] . $l_content_end;
+						$results .= $l_content . '<strong>'.strip_tags($category[$s['id_book']]).'</strong> / ';
+					$results .= strip_tags($s['quest']) . $l_content_end;
            			$results .= $l_head_end . "\n";
            		}
            		if($i >= $latest) break;
@@ -1500,11 +1500,11 @@ echo "        </div>";
 		else if( current_user_can($settings['wp_dsfaq_plus_admin_permission']) ) $this->settings_admin_permission = true;
 		else	$this->settings_admin_permission = false;
 
-        if(isset($flag) and $flag != false){ $sql = "SELECT * FROM `".$table_name."` WHERE `name_faq` = '".$flag."'"; }
+        if(isset($flag) and $flag != false){ $sql = "SELECT * FROM `".esc_sql($table_name)."` WHERE `name_faq` = '".esc_sql($flag)."'"; }
 //        else                               { $sql = "SELECT * FROM `".$table_name."` ORDER BY `name_faq` ASC"; }
-        else if($id)                        { $sql = "SELECT * FROM `".$table_name."` WHERE `id` = '".$id."'"; }
+        else if($id)                        { $sql = "SELECT * FROM `".esc_sql($table_name)."` WHERE `id` = '".esc_sql($id)."'"; }
 		// 2011.08.26 (1.0.11): 名前順にソート
-        else                               { $sql = "SELECT * FROM `".$table_name."` ORDER BY `name_faq` ASC"; }
+        else                               { $sql = "SELECT * FROM `".esc_sql($table_name)."` ORDER BY `name_faq` ASC"; }
 //        else                               { $sql = "SELECT * FROM `".$table_name."` ORDER BY `id` ASC"; }
         $select = $wpdb->get_results($sql, ARRAY_A);
         
@@ -1512,14 +1512,14 @@ echo "        </div>";
             if($raw){return $select;}
             $results = '';
             foreach ($select as $s) {           
-                $results .= '<div id="dsfaq_id_'.$s['id'].'" class="dsfaq_curentbook"><div class="dsfaq_name_faq_book">';
-                $results .= '<table border="0" width="690"><tr><td id="dsfaq_namebook_'.$s['id'].'">';
-                $results .= '<span class="dsfaq_title">'.$s['name_faq'].'</span>';
-                $results .= '</td><td align="center" width="140" id="dsfaq_toolnamebook_'.$s['id'].'">';
+                $results .= '<div id="dsfaq_id_'.esc_attr($s['id']).'" class="dsfaq_curentbook"><div class="dsfaq_name_faq_book">';
+                $results .= '<table border="0" width="690"><tr><td id="dsfaq_namebook_'.esc_attr($s['id']).'">';
+                $results .= '<span class="dsfaq_title">'.strip_tags($s['name_faq']).'</span>';
+                $results .= '</td><td align="center" width="140" id="dsfaq_toolnamebook_'.esc_attr($s['id']).'">';
                 
          		// 2011.08.25 (1.0.11)  Limitation by current user permission 
                 if($this->settings_admin_permission){
-                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_edit_name_book(\''.$s['id'].'\');"><span class="button">'.__('Change&nbsp;title', 'wp-ds-faq-plus').'</span></a>';
+                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; dsfaq_edit_name_book(\''.esc_attr($s['id']).'\');"><span class="button">'.__('Change&nbsp;title', 'wp-ds-faq-plus').'</span></a>';
                 }
 
                 $results .= '</td><td width="120" align="center">';
@@ -1527,9 +1527,9 @@ echo "        </div>";
        		// 2011.08.25 (1.0.11)  Limitation by current user permission 
                 if($this->settings_admin_permission){
 					  if(! $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'])
-		                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.$s["id"].'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'</span></a>';
+		                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.esc_attr($s["id"]).'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'</span></a>';
 		              else  if(! $settings['wp_dsfaq_plus_disable_all_delete'] && ! $settings['wp_dsfaq_plus_disable_category_delete'])
-	                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.$s["id"].'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'</span></a>';
+	                	$results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; delete_faqbook(\''.esc_attr($s["id"]).'\');"><span class="button">'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'</span></a>';
 	                  else
 	                  	$results .= '<input type="button" name="dummy_button" value="'.__('Delete&nbsp;FAQ', 'wp-ds-faq-plus').'" class="button" disabled/>';
 	            }
@@ -1565,16 +1565,16 @@ echo "        </div>";
                 $results .= '</td><td width="300">';
                 $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_mode_'.$s['id'].'">';
 /*
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($s['mode'] == 0)?"checked":"").'> '.(($s['mode'] == 0)?"<b>":"").__('deployed', 'wp-ds-faq-plus').(($s['mode'] == 0)?"</b>":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($s['mode'] == 0)?"checked":"").'> '.(($s['mode'] == 0)?"<b>":"").__('deployed', 'wp-ds-faq-plus').(($s['mode'] == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($s['mode'] == 1)?"checked":"").'> '.(($s['mode'] == 1)?"<b>":"").__('minimized', 'wp-ds-faq-plus').(($s['mode'] == 1)?"</b>":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($s['mode'] == 1)?"checked":"").'> '.(($s['mode'] == 1)?"<b>":"").__('minimized', 'wp-ds-faq-plus').(($s['mode'] == 1)?"</b>":"");
 */
 
 				// 2011.07.19: 1.0.9 for sort
 				
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($mode == 0)?"checked":"").'> '.(($mode == 0)?"<b>":"").__('deployed', 'wp-ds-faq-plus').(($mode == 0)?"</b>":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'0\');" '.(($mode == 0)?"checked":"").'> '.(($mode == 0)?"<b>":"").__('deployed', 'wp-ds-faq-plus').(($mode == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
-                $results .= '<input type="radio" name="dsfaq_mode_'.$s['id'].'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($mode == 1)?"checked":"");
+                $results .= '<input type="radio" name="dsfaq_mode_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplay(\''.$s['id'].'\', \'1\');" '.(($mode == 1)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
@@ -1588,21 +1588,21 @@ echo "        </div>";
                 $results .= '<span class="dsfaq_shortcode">'.__('Sort Key:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
 
-                $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_sort_'.$s['id'].'">';
-                $results .= '<input type="radio" name="dsfaq_sort_'.$s['id'].'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'0\');" '.(($sort == 0)?"checked":"");
+                $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_sort_'.esc_attr($s['id']).'">';
+                $results .= '<input type="radio" name="dsfaq_sort_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'0\');" '.(($sort == 0)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
                 $results  .= '> '.(($sort == 0)?"<b>":"").__('Custom', 'wp-ds-faq-plus').(($sort == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
-                $results .= '<input type="radio" name="dsfaq_sort_'.$s['id'].'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'1\');" '.(($sort == 1)?"checked":"");
+                $results .= '<input type="radio" name="dsfaq_sort_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'1\');" '.(($sort == 1)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
                 $results .= '> '.(($sort == 1)?"<b>":"").__('Last modified', 'wp-ds-faq-plus').(($sort == 1)?"</b>":"");
 
                 $results .= ' &nbsp; ';
-                $results .= '<input type="radio" name="dsfaq_sort_'.$s['id'].'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'2\');" '.(($sort == 2)?"checked":"");
+                $results .= '<input type="radio" name="dsfaq_sort_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplaysort(\''.$s['id'].'\', \'2\');" '.(($sort == 2)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
@@ -1615,14 +1615,14 @@ echo "        </div>";
                 $results .= '<span class="dsfaq_shortcode">'.__('Order by:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
 
-                $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_order_'.$s['id'].'">';
-                $results .= '<input type="radio" name="dsfaq_order_'.$s['id'].'" onclick="dsfaq_change_faqdisplayorder(\''.$s['id'].'\', \'0\');" '.(($order == 0)?"checked":"");
+                $results .= '<span class="dsfaq_shortcode" id="dsfaq_display_order_'.esc_attr($s['id']).'">';
+                $results .= '<input type="radio" name="dsfaq_order_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplayorder(\''.esc_attr($s['id']).'\', \'0\');" '.(($order == 0)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
                 $results .= '> '.(($order == 0)?"<b>":"").__('Ascending', 'wp-ds-faq-plus').(($order == 0)?"</b>":"");
                 $results .= ' &nbsp; ';
-                $results .= '<input type="radio" name="dsfaq_order_'.$s['id'].'" onclick="dsfaq_change_faqdisplayorder(\''.$s['id'].'\', \'1\');" '.(($order == 1)?"checked":"");
+                $results .= '<input type="radio" name="dsfaq_order_'.esc_attr($s['id']).'" onclick="dsfaq_change_faqdisplayorder(\''.esc_attr($s['id']).'\', \'1\');" '.(($order == 1)?"checked":"");
 				// 2011.08.25 (1.0.11) for Limitation by current user permission
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
@@ -1635,15 +1635,15 @@ echo "        </div>";
                 $results .= '<span class="dsfaq_shortcode">'.__('Visible:', 'wp-ds-faq-plus').' </span> ';
                 $results .= '</td><td width="300">';
 
-                $results .= '<span class="dsfaq_shortcode" id="dsfaq_faqdisplay_visible_'.$s['id'].'">';
-                $results .= '<input type="radio" name="dsfaq_faqdisplay_visible_'.$s['id'].'" onclick="dsfaq_faqdisplay_visible(\''.$s['id'].'\', \'1\');" '.(($visible == 1)?"checked":"");
+                $results .= '<span class="dsfaq_shortcode" id="dsfaq_faqdisplay_visible_'.esc_attr($s['id']).'">';
+                $results .= '<input type="radio" name="dsfaq_faqdisplay_visible_'.esc_attr($s['id']).'" onclick="dsfaq_faqdisplay_visible(\''.esc_attr($s['id']).'\', \'1\');" '.(($visible == 1)?"checked":"");
 
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
                 $results .= '> '.(($visible == 1)?"<b>":"").__('Publish', 'wp-ds-faq-plus').(($visible == 1)?"</b>":"");
                 $results .= ' &nbsp; ';
 
-                $results .= '<input type="radio" name="dsfaq_faqdisplay_visible_'.$s['id'].'" onclick="dsfaq_faqdisplay_visible(\''.$s['id'].'\', \'0\');" '.(($visible == 0)?"checked":"");
+                $results .= '<input type="radio" name="dsfaq_faqdisplay_visible_'.esc_attr($s['id']).'" onclick="dsfaq_faqdisplay_visible(\''.esc_attr($s['id']).'\', \'0\');" '.(($visible == 0)?"checked":"");
 
                 if(! $this->settings_admin_permission)
                    $results .= ' disabled';
@@ -1661,7 +1661,7 @@ echo "        </div>";
                 $results .= $this->get_quest_from_faq($s['id'], false, false, false, $sort, $order);
                 
                 $results .= '<div id="dsfaq_add_q_'.$s['id'].'" class="dsfaq_name_faq_quest_add">';
-                $results .= '<a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.$s['id'].'\',\''.$s['id'].'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq-plus').'</a>';
+                $results .= '<a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.esc_attr($s['id']).'\',\''.esc_attr($s['id']).'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq-plus').'</a>';
                 $results .= '</div>';
                 $results .= '</div>';
             }
@@ -1704,8 +1704,8 @@ echo "        </div>";
 
         $table_name = $wpdb->prefix."dsfaq_quest";
 
-       if(isset($id_quest) and $id_quest != false){ $sql = "SELECT * FROM `".$table_name."` WHERE `id_book` = '".$id_book."' AND `id` = '".$id_quest."'"; }
-        elseif(isset($quest) and $quest != false)  { $sql = "SELECT * FROM `".$table_name."` WHERE `id_book` = '".$id_book."' AND `quest` = '".$quest."'"; }
+       if(isset($id_quest) and $id_quest != false){ $sql = "SELECT * FROM `".esc_sql($table_name)."` WHERE `id_book` = '".esc_sql($id_book)."' AND `id` = '".esc_sql($id_quest)."'"; }
+        elseif(isset($quest) and $quest != false)  { $sql = "SELECT * FROM `".esc_sql($table_name)."` WHERE `id_book` = '".esc_sql($id_book)."' AND `quest` = '".esc_sql($quest)."'"; }
 /*
 //       else                                       { $sql = "SELECT * FROM `".$table_name."` WHERE `id_book` = '".$id_book."' ORDER BY `sort` ASC"; }
 // `id` , `id_book` , `date` ,    `quest` ,           `answer` ,          `sort`  2011.03.18 By Kitani. 1.0.1
@@ -1723,7 +1723,7 @@ echo "        </div>";
         else $order_by = "ASC"; // default
         
 //        $sql = "SELECT * FROM `".$table_name."` WHERE `id_book` = '".$id_book."' ORDER BY `".$sort_by."` DESC";
-        $sql = "SELECT * FROM `".$table_name."` WHERE `id_book` = '".$id_book."' ORDER BY `".$sort_by."` ".$order_by;
+        $sql = "SELECT * FROM `".esc_sql($table_name)."` WHERE `id_book` = '".esc_sql($id_book)."' ORDER BY `".esc_sql($sort_by)."` ".esc_sql($order_by);
        }
         $select = $wpdb->get_results($sql, ARRAY_A);
 
@@ -1732,19 +1732,19 @@ echo "        </div>";
             $results = '';
 //            $results = $sql;
             foreach ($select as $s) {
-                $results .= '<div id="dsfaq_idquest_'.$s['id'].'" class="dsfaq_name_faq_quest" style="margin-left: 0;">';
+                $results .= '<div id="dsfaq_idquest_'.esc_attr($s['id']).'" class="dsfaq_name_faq_quest" style="margin-left: 0;">';
 //                $results .= '<table border="0" width="690"><tr><td width="12">';
                 $results .= '<table border="0" width="690"><tr><td width="12"></td>'; // 2011.03.19
 
 		$results .= '<td width="12">';
-                $results .= '<a href="#_" onclick="dsfaq_q_change(\'up\', \''.$s['id_book'].'\', \''.$s['id'].'\');"><img src="'.$this->plugurl.'img/up.gif" width="8" height="8"></a>';
+                $results .= '<a href="#_" onclick="dsfaq_q_change(\'up\', \''.esc_attr($s['id_book']).'\', \''.esc_attr($s['id']).'\');"><img src="'.$this->plugurl.'img/up.gif" width="8" height="8"></a>';
                 $results .= '<br><img src="'.$this->plugurl.'img/1x1.gif" width="1" height="6"><br>';
-                $results .= '<a href="#_" onclick="dsfaq_q_change(\'down\', \''.$s['id_book'].'\', \''.$s['id'].'\');"><img src="'.$this->plugurl.'img/down.gif" width="8" height="8"></a>';
+                $results .= '<a href="#_" onclick="dsfaq_q_change(\'down\', \''.esc_attr($s['id_book']).'\', \''.esc_attr($s['id']).'\');"><img src="'.$this->plugurl.'img/down.gif" width="8" height="8"></a>';
                 $results .= '</td>';
 
 		// 2011.03.18 By Kitani. タイトルの先頭に（）があれば、タイトルの後ろの列に移動する（カテゴリー表示）
 		// （カテゴリ表示内の-は改行）
-		$s_q = $s['quest'];
+		$s_q = strip_tags($s['quest']);
 		$s_q = str_replace('(', '（', $s_q); // 何故か半角()でのpreg_matchはうまく動作しない
 		$s_q = str_replace(')', '）', $s_q);
 		$s_q = str_replace('　', '  ', $s_q); // 全角スペースもltrimされるようにする（全角スペースは２つの半角スペースに置換）
@@ -1777,9 +1777,9 @@ echo "        </div>";
                 $results .= $s_q_value . '</td><td width="80" align="center"><small>' . $s_q_type.'</small>';
 
 //                $results .= '</td><td width="100" align="center" id="dsfaq_edit_link_'.$s['id'].'">';
-                $results .= '</td><td width="60" align="center" id="dsfaq_edit_link_'.$s['id'].'">';
+                $results .= '</td><td width="60" align="center" id="dsfaq_edit_link_'.esc_attr($s['id']).'">';
 
-                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; edit_quest('.$s['id'].');"><span class="button">'.__('Edit', 'wp-ds-faq-plus').'</span></a>';
+                $results .= '<a href="#_" onclick="this.innerHTML=\'<img src='.$this->plugurl.'img/ajax-loader.gif>\'; edit_quest('.esc_attr($s['id']).');"><span class="button">'.__('Edit', 'wp-ds-faq-plus').'</span></a>';
 
 		// 削除は一番右端にもっていこう
 //               $results .= '</td><td width="120" align="center">';
@@ -1816,7 +1816,7 @@ echo "        </div>";
                 $results .= '</div>'  ;
 
                if(isset($quest) and $quest != false){
-                    $results .= '<div id="dsfaq_add_q_'.$id_book.'" class="dsfaq_name_faq_quest_add"><a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.$s['id_book'].'\',\''.$s['id_book'].'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq-plus').'</a></div>';
+                    $results .= '<div id="dsfaq_add_q_'.$id_book.'" class="dsfaq_name_faq_quest_add"><a href="#_" onclick="add_input_quest(\'dsfaq_add_q_'.esc_attr($s['id_book']).'\',\''.esc_attr($s['id_book']).'\');" class="button">'.__('Add&nbsp;question', 'wp-ds-faq-plus').'</a></div>';
                 }
            }
         }else{
