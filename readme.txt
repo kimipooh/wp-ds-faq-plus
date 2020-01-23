@@ -4,7 +4,7 @@ Tags: faq, answer, question, documentation, pages, page, ajax
 Requires at least: 4.0
 Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPL v2  or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,9 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 5. Edit Menu.
 
 == Changelog ==
+= 1.4.3 =
+- Fixed the category issue.
+
 = 1.4.2 =
 - Improved the security programs. All tags are removed in title of a category and a faq. A answer can only use tags for "Post" allows by WordPress. 
 - Tested up to WordPress 5.3.2 and PHP 7.3
