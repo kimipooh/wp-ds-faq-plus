@@ -3,7 +3,7 @@
 Plugin Name: WP DS FAQ Plus
 Plugin URI: http://kitaney.jp/~kitani/tools/wordpress/wp-ds-faq-plus_en.html
 Description: WP DS FAQ Plus is the expand of WP DS FAQ  plugin. The plugin bases on WP DS FAQ 1.3.3. This plugin includes the fixed some issues (Quotation and Security, such as SQL Injection and CSRF. ) , Japanese translation, improvement of interface, and SSL Admin setting.
-Version: 1.4.5
+Version: 1.4.6
 Author: Kimiya Kitani
 Author URI: https://profiles.wordpress.org/kimipooh/
 Text Domain: wp-ds-faq-plus
@@ -62,7 +62,7 @@ class dsfaq{
         $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_db_ver']   = '0.1'; // 2011.08.29 (1.0.12) Add custom_mode to dsfaq_name table for custom sort.
         $this->wp_ds_faq_default_array['wp_ds_faq_showcopyright'] = true;
         $this->wp_ds_faq_default_array['wp_ds_faq_ver']           = '133'; // 2011.08.22 (1.0.10): Change 132 to 133
-        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1450'; // 2011.08.29 (1.0.12): Version 
+        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1460'; // 2011.08.29 (1.0.12): Version 
         $this->wp_ds_faq_default_array['wp_ds_faq_h1']            = '<h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_h2']            = '</h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_css']           = "<style type='text/css'>\n".
@@ -704,49 +704,52 @@ class dsfaq{
 		else if( current_user_can($settings['wp_dsfaq_plus_admin_permission']) ) $this->settings_admin_permission = true;
 		else	$this->settings_admin_permission = false;
 
-		if ($_POST['posted'] == 'Y' && $this->settings_admin_permission){
-		   // Save the settings.
-		   if(!isset($_POST['wp_dsfaq_plus_general_display_title'])) $settings['wp_dsfaq_plus_general_display_title'] = 0;
-		   else $settings['wp_dsfaq_plus_general_display_title'] = intval($_POST['wp_dsfaq_plus_general_display_title']);
+		if(isset($_POST["wdfp-form"]) && $_POST["wdfp-form"]){
+			if(check_admin_referer("wdfp-nonce-key", "wdfp-form")){
+				if ($_POST['posted'] == 'Y' && $this->settings_admin_permission){
+				   // Save the settings.
+				   if(!isset($_POST['wp_dsfaq_plus_general_display_title'])) $settings['wp_dsfaq_plus_general_display_title'] = 0;
+				   else $settings['wp_dsfaq_plus_general_display_title'] = intval($_POST['wp_dsfaq_plus_general_display_title']);
 
-		   if(!isset($_POST['wp_dsfaq_plus_enable_ratings'])) $settings['wp_dsfaq_plus_enable_ratings'] = 0;
-		   else $settings['wp_dsfaq_plus_enable_ratings'] 	= intval($_POST['wp_dsfaq_plus_enable_ratings']);
+				   if(!isset($_POST['wp_dsfaq_plus_enable_ratings'])) $settings['wp_dsfaq_plus_enable_ratings'] = 0;
+				   else $settings['wp_dsfaq_plus_enable_ratings'] 	= intval($_POST['wp_dsfaq_plus_enable_ratings']);
 
-		   if(!isset($_POST['wp_dsfaq_plus_editor_permission'])) $settings['wp_dsfaq_plus_editor_permission'] = "";
-		   else{
-		     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("\\", "", $_POST['wp_dsfaq_plus_editor_permission']);
-		     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("\"", "", $settings['wp_dsfaq_plus_editor_permission']);
-		     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("¥", "", $settings['wp_dsfaq_plus_editor_permission']);
-		     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("'", "", $settings['wp_dsfaq_plus_editor_permission']);
-		     $settings['wp_dsfaq_plus_editor_permission'] = stripslashes($settings['wp_dsfaq_plus_editor_permission']);
-		   }
-		   
-		   if(!isset($_POST['wp_dsfaq_plus_admin_permission'])) $settings['wp_dsfaq_plus_admin_permission'] = "";
-		   else{
-		     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("\\", "", $_POST['wp_dsfaq_plus_admin_permission']);
-		     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("\"", "", $settings['wp_dsfaq_plus_admin_permission']);
-		     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("¥", "", $settings['wp_dsfaq_plus_admin_permission']);
-		     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("'", "", $settings['wp_dsfaq_plus_admin_permission']);
-		     $settings['wp_dsfaq_plus_admin_permission'] = stripslashes($settings['wp_dsfaq_plus_admin_permission']);
-		   }
-		   
-		   // 2011.08.26 (1.0.11): データが存在しない場合には「0」を入れておくこと
-		   if(!isset($_POST['wp_dsfaq_plus_disable_all_delete']))  $settings['wp_dsfaq_plus_disable_all_delete'] = 0;
-		   else $settings['wp_dsfaq_plus_disable_all_delete'] = intval($_POST['wp_dsfaq_plus_disable_all_delete']);
+				   if(!isset($_POST['wp_dsfaq_plus_editor_permission'])) $settings['wp_dsfaq_plus_editor_permission'] = "";
+				   else{
+				     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("\\", "", $_POST['wp_dsfaq_plus_editor_permission']);
+				     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("\"", "", $settings['wp_dsfaq_plus_editor_permission']);
+				     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("¥", "", $settings['wp_dsfaq_plus_editor_permission']);
+				     $settings['wp_dsfaq_plus_editor_permission'] = str_replace("'", "", $settings['wp_dsfaq_plus_editor_permission']);
+				     $settings['wp_dsfaq_plus_editor_permission'] = stripslashes($settings['wp_dsfaq_plus_editor_permission']);
+				   }
+				   if(!isset($_POST['wp_dsfaq_plus_admin_permission'])) $settings['wp_dsfaq_plus_admin_permission'] = "";
+				   else{
+				     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("\\", "", $_POST['wp_dsfaq_plus_admin_permission']);
+				     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("\"", "", $settings['wp_dsfaq_plus_admin_permission']);
+				     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("¥", "", $settings['wp_dsfaq_plus_admin_permission']);
+				     $settings['wp_dsfaq_plus_admin_permission'] = str_replace("'", "", $settings['wp_dsfaq_plus_admin_permission']);
+				     $settings['wp_dsfaq_plus_admin_permission'] = stripslashes($settings['wp_dsfaq_plus_admin_permission']);
+				   }
 
-		   if(!isset($_POST['wp_dsfaq_plus_disable_category_delete'])) $settings['wp_dsfaq_plus_disable_category_delete'] = 0;
-		   else $settings['wp_dsfaq_plus_disable_category_delete'] = intval($_POST['wp_dsfaq_plus_disable_category_delete']);
+				   // 2011.08.26 (1.0.11): データが存在しない場合には「0」を入れておくこと
+				   if(!isset($_POST['wp_dsfaq_plus_disable_all_delete']))  $settings['wp_dsfaq_plus_disable_all_delete'] = 0;
+				   else $settings['wp_dsfaq_plus_disable_all_delete'] = intval($_POST['wp_dsfaq_plus_disable_all_delete']);
 
-		   if(!isset($_POST['wp_dsfaq_plus_disable_edit_delete']) ) $settings['wp_dsfaq_plus_disable_edit_delete'] = 0;
-		   else $settings['wp_dsfaq_plus_disable_edit_delete'] = intval($_POST['wp_dsfaq_plus_disable_edit_delete']);
+				   if(!isset($_POST['wp_dsfaq_plus_disable_category_delete'])) $settings['wp_dsfaq_plus_disable_category_delete'] = 0;
+				   else $settings['wp_dsfaq_plus_disable_category_delete'] = intval($_POST['wp_dsfaq_plus_disable_category_delete']);
 
-		   if(!isset($_POST['wp_dsfaq_plus_disable_frontedit_delete'])) $settings['wp_dsfaq_plus_disable_frontedit_delete'] = 0;
-		   else $settings['wp_dsfaq_plus_disable_frontedit_delete'] = intval($_POST['wp_dsfaq_plus_disable_frontedit_delete']);
+				   if(!isset($_POST['wp_dsfaq_plus_disable_edit_delete']) ) $settings['wp_dsfaq_plus_disable_edit_delete'] = 0;
+				   else $settings['wp_dsfaq_plus_disable_edit_delete'] = intval($_POST['wp_dsfaq_plus_disable_edit_delete']);
 
-		   if(!isset($_POST['wp_dsfaq_plus_apply_safetyoptions_to_admin'])) $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'] = 0;
-		   else $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'] = intval($_POST['wp_dsfaq_plus_apply_safetyoptions_to_admin']);
+				   if(!isset($_POST['wp_dsfaq_plus_disable_frontedit_delete'])) $settings['wp_dsfaq_plus_disable_frontedit_delete'] = 0;
+				   else $settings['wp_dsfaq_plus_disable_frontedit_delete'] = intval($_POST['wp_dsfaq_plus_disable_frontedit_delete']);
 
-           update_option('wp_ds_faq_array', $settings);
+				   if(!isset($_POST['wp_dsfaq_plus_apply_safetyoptions_to_admin'])) $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'] = 0;
+				   else $settings['wp_dsfaq_plus_apply_safetyoptions_to_admin'] = intval($_POST['wp_dsfaq_plus_apply_safetyoptions_to_admin']);
+
+				update_option('wp_ds_faq_array', $settings);
+			}
+		}
 ?>
 <div class="dsfaq_plus_admin_setting_page_updated"><p><strong><?php _e('Updated', 'wp-ds-faq-plus'); ?></strong></p></div>
 <?php
@@ -800,6 +803,8 @@ class dsfaq{
    <div id="wp_ds_faq_plus_admin_menu">
 	<h2><?php _e('WP DS FAQ Plus Admin Settings', 'wp-ds-faq-plus'); ?></h2>
 	<form method="post" action="">
+	<?php // for CSRF (Cross-Site Request Forgery): https://propansystem.net/blog/2018/02/20/post-6279/
+		wp_nonce_field("wdfp-nonce-key", "wdfp-form"); ?>
 		<input type="hidden" name="posted" value="Y" />
 
      <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
