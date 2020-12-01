@@ -2,7 +2,7 @@
 Contributors: kimipooh
 Tags: faq, answer, question, documentation, pages, page, ajax
 Requires at least: 4.0
-Tested up to: 5.3.2
+Tested up to: 5.6
 Requires PHP: 5.6
 Stable tag: 1.4.6
 License: GPL v2  or later
@@ -52,6 +52,7 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 = 1.4.6 =
 * Improved the response of CSRF (Cross-Site Request Forgery) vulnerability for this plugin's settings.
 * Tested up WordPress 5.3.2 and php 7.4.2.
+* Tested up WordPress 5.6 and php 7.4.2.
 
 = 1.4.5 =
 - Improved the compatibility for PHP7 regartding __construct.
