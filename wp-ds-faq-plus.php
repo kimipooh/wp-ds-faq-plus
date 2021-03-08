@@ -3,7 +3,7 @@
 Plugin Name: WP DS FAQ Plus
 Plugin URI: http://kitaney.jp/~kitani/tools/wordpress/wp-ds-faq-plus_en.html
 Description: WP DS FAQ Plus is the expand of WP DS FAQ  plugin. The plugin bases on WP DS FAQ 1.3.3. This plugin includes the fixed some issues (Quotation and Security, such as SQL Injection and CSRF. ) , Japanese translation, improvement of interface, and SSL Admin setting.
-Version: 1.4.6
+Version: 1.4.7
 Author: Kimiya Kitani
 Author URI: https://profiles.wordpress.org/kimipooh/
 Text Domain: wp-ds-faq-plus
@@ -24,8 +24,6 @@ class dsfaq{
     #   Конструктор                                              #
     ##############################################################------------------------------------------------------------#
     function __construct(){
-	// 1.0.4: CSRF対策。2011.04.07. ショートコードと管理画面の両方にhiddenを埋め込む。そしてsession IDを使わないこと！ 
-	 session_start();
         $this->plugurl = WP_PLUGIN_URL.'/'.str_replace(basename(__FILE__),"",plugin_basename(__FILE__));
 
 /**		SSL対策が必要。
@@ -62,7 +60,7 @@ class dsfaq{
         $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_db_ver']   = '0.1'; // 2011.08.29 (1.0.12) Add custom_mode to dsfaq_name table for custom sort.
         $this->wp_ds_faq_default_array['wp_ds_faq_showcopyright'] = true;
         $this->wp_ds_faq_default_array['wp_ds_faq_ver']           = '133'; // 2011.08.22 (1.0.10): Change 132 to 133
-        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1460'; // 2011.08.29 (1.0.12): Version 
+        $this->wp_ds_faq_plus_default_array['wp_ds_faq_plus_ver']      = '1470'; // 2011.08.29 (1.0.12): Version 
         $this->wp_ds_faq_default_array['wp_ds_faq_h1']            = '<h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_h2']            = '</h3>';
         $this->wp_ds_faq_default_array['wp_ds_faq_css']           = "<style type='text/css'>\n".
@@ -174,7 +172,7 @@ class dsfaq{
         }
         // visibleの初期値は1（default value of visible is 1. All FAQ is published. (2011.09.07: 1.0.13)
         // In case of displaying latest FAQ ([dsfaq latest=10 /]), you may have invisible data.
-   		if( $settings['wp_ds_faq_plus_ver'] < 1013){
+   		if( isset($settings['wp_ds_faq_plus_ver']) && $settings['wp_ds_faq_plus_ver'] < 1013 ){
         	$table_name = $wpdb->prefix."dsfaq_name";
 	        $sql = "SELECT * FROM `".esc_sql($table_name)."`"; 
 	        $select = $wpdb->get_results($sql, ARRAY_A);
@@ -604,11 +602,6 @@ class dsfaq{
 			// 2012.12.11 (1.0.15)
             if ($settings['wp_ds_faq_showcopyright'] == true){$results .= '<br><a class="dsfaq_copyright" href="http://kitaney.jp/~kitani/tools/wordpress/wp-ds-faq-plus_en.html">&copy; Kimiya Kitani</a>';};
 
-    // 1.0.4: CSRF対策 (2011.04.07) Kitani。mt_randについてはPHP4.2.0以降では srand不要。自動で処理されるから
-   // ショートコードでの表示用（ここでも編集するんでね）
-   $csrf_ticket = sha1(uniqid(mt_rand(), true));  $_SESSION['csrf_ticket'] = $csrf_ticket; 
-   $results .= '<input type="hidden" name="dsfaq_plus_mode_csrf_ticket"  value="' . $csrf_ticket . '" />'; 
-
             return $results;
         }
         
@@ -705,6 +698,7 @@ class dsfaq{
 		else	$this->settings_admin_permission = false;
 
 		if(isset($_POST["wdfp-form"]) && $_POST["wdfp-form"]){
+		    // CSRF Check
 			if(check_admin_referer("wdfp-nonce-key", "wdfp-form")){
 				if ($_POST['posted'] == 'Y' && $this->settings_admin_permission){
 				   // Save the settings.
@@ -1270,29 +1264,8 @@ echo "        </div>";
         <?php echo $this->get_faq_book(); ?>
     </div>
     <br><br>
-
-<?php // 2011.08.25 (1.0.11) Movement to setting menu. ?>
-<?php // $settings = get_option('wp_ds_faq_array'); ?>
-<!--
-    <fieldset style="border:1px solid #777777; width: 695px; padding-left: 6px;">
-        <legend><?php _e('Settings:', 'wp-ds-faq-plus') ?></legend>
-        <p><input id="dsfaq_h1" type="text" value="<?php if (isset($settings['wp_ds_faq_h1'])){echo $settings['wp_ds_faq_h1'];}; ?>" /> <?php _e('Text before the FAQ book name.', 'wp-ds-faq-plus') ?></p>
-        <p><input id="dsfaq_h2" type="text" value="<?php if (isset($settings['wp_ds_faq_h2'])){echo $settings['wp_ds_faq_h2'];}; ?>" /> <?php _e('Text after the FAQ book name.', 'wp-ds-faq-plus') ?></p>
-        <p>CSS</p>
-        <textarea id="dsfaq_css" rows="10" cols="45"><?php if (isset($settings['wp_ds_faq_css'])){echo stripslashes($settings['wp_ds_faq_css']);}; ?></textarea>
-        <p><input id="dsfaq_copyr" type="checkbox" name="copyright"<?php if ($settings['wp_ds_faq_showcopyright'] == true){echo " checked";}; ?>> <?php _e('Show a link to the plugin in the end of the page.', 'wp-ds-faq-plus') ?></p>
-        <p class="dsfaq_drv"><img src="<?php echo $this->plugurl; ?>img/1x1.gif" width="1" height="16"><span id="dsfaq_progress"></span> &nbsp; <a href="#_" onclick="dsfaq_restore_settings();" class="button"><?php _e('Restore settings', 'wp-ds-faq-plus') ?></a> &nbsp; <a href="#_" onclick="dsfaq_save_settings();" class="button"><?php _e('Save', 'wp-ds-faq-plus') ?></a></p>
-        <br>
-    </fieldset>
-    <br><br>
--->
 </div>
-<?php // 2011.04.24 (1.0.6): add_sub_idが引数として渡された場合、CSRF対策以外のいらない部分は除去 ?>
 <?php } ?>
-    <?php // 1.0.4: CSRF対策 (2011.04.07)。mt_randについてはPHP4.2.0以降では srand不要。自動で処理されるから... 管理画面用 ?>
-   <?php  $csrf_ticket = sha1(uniqid(mt_rand(), true));  $_SESSION['csrf_ticket'] = $csrf_ticket; ?>
-   <input type="hidden" name="dsfaq_plus_mode_csrf_ticket"  value="<?php print $csrf_ticket; ?>" /> 
-
 <?php        
     }
     # END options_page ###########################################------------------------------------------------------------#
