@@ -3,7 +3,7 @@
 Plugin Name: WP DS FAQ Plus
 Plugin URI: http://kitaney.jp/~kitani/tools/wordpress/wp-ds-faq-plus_en.html
 Description: WP DS FAQ Plus is the expand of WP DS FAQ  plugin. The plugin bases on WP DS FAQ 1.3.3. This plugin includes the fixed some issues (Quotation and Security, such as SQL Injection and CSRF. ) , Japanese translation, improvement of interface, and SSL Admin setting.
-Version: 1.4.8
+Version: 1.4.9
 Author: Kimiya Kitani
 Author URI: https://profiles.wordpress.org/kimipooh/
 Text Domain: wp-ds-faq-plus
@@ -410,7 +410,7 @@ class dsfaq{
     #  Говорим WordPress-у что у нас многоязычие в плагине       #
     ##############################################################------------------------------------------------------------#
     function enable_getext() {
-        load_plugin_textdomain('wp-ds-faq-plus', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
+        load_plugin_textdomain('wp-ds-faq-plus');
     }
     # END enable_getext ##########################################------------------------------------------------------------#
     
@@ -1306,13 +1306,11 @@ echo "        </div>";
 			if(empty($timezone_string)){
 				if(date_default_timezone_get() == "UTC"){ // In the future, wordpress may change the policy about timezone (Now, "UTC")
 					// 1.0.17: 2013.01.10 setTimestamp requires PHP version 5.3.0 or higher. (http://php.net/manual/en/datetime.gettimestamp.php)
-//					$dt->setTimestamp(strtotime($date) + 3600 * ($timezone_offset + date('I',$date)));
-					if (version_compare(PHP_VERSION, '5.3.0') < 0){
-    					$dt = new DateTime("@".(strtotime($date) + 3600 * ($timezone_offset + date('I',$date))));
-    				}else{
-   						 $dt->setTimestamp(strtotime($date) + 3600 * ($timezone_offset + date('I',$date)));
-    				}
-
+   				    if($timezone_offset > 0){
+       				    $dt = new DateTime($date . " +" . $timezone_offset . " hours");
+   				    }else{
+       				    $dt = new DateTime($date . " " . $timezone_offset . " hours");
+       				}
 				}else
 					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
 			}else
