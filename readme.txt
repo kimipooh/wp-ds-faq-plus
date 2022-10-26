@@ -1,8 +1,8 @@
 === WP DS FAQ Plus ===
 Contributors: kimipooh
 Tags: faq, answer, question, documentation, pages, page, ajax
-Requires at least: 4.0
-Tested up to: 6.0
+Requires at least: 5.4
+Tested up to: 6.1
 Requires PHP: 5.8
 Stable tag: 1.4.9
 License: GPL v2  or later
@@ -52,6 +52,8 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 = 1.4.9 =
 * Fixed to use DateTime function instead of date function.
 * Tested up WordPress 6.0
+* Tested up to WordPress 6.1
+* Changed the supported version of WordPress from 4.0 to 5.4 or higher.
 
 = 1.4.8 =
 * Fixed the warning regarding an undefined variable.
