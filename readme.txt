@@ -2,7 +2,7 @@
 Contributors: kimipooh
 Tags: faq, answer, question, documentation, pages, page, ajax
 Requires at least: 4.0
-Tested up to: 6.0
+Tested up to: 6.5.2
 Requires PHP: 5.8
 Stable tag: 1.5.0
 License: GPL v2  or later
@@ -51,6 +51,7 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 == Changelog ==
 = 1.5.0 =
 * Tested up WordPress 6.1 with PHP8.2
+* Tested up WordPress 6.5.2 with PHP8.3.6
 
 = 1.4.9 =
 * Fixed to use DateTime function instead of date function.
