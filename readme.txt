@@ -1,6 +1,6 @@
 === WP DS FAQ Plus ===
 Contributors: kimipooh
-Tags: faq, answer, question, documentation, pages, page, ajax
+Tags: faq, answer, question, documentation
 Requires at least: 4.0
 Tested up to: 6.5.2
 Requires PHP: 5.8
