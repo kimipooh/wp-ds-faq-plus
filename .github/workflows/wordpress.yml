@@ -106,7 +106,7 @@ jobs:
         if: ${{ matrix.php >= 8.0 && ( matrix.wp == 'latest' || ( matrix.wp != 'trunk' && matrix.wp < 5.9 ) ) }}
         uses: "ramsey/composer-install@v1"
         with:
-          composer-options: --ignore-platform-reqs --prefer-lowest --prefer-stable
+          composer-options: --ignore-platform-reqs
 
       - name: Run the unit tests - single site
         run: vendor/bin/phpunit
