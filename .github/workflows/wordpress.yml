@@ -22,6 +22,7 @@ jobs:
         php: ['7.4', '8.0', '8.1', '8.2','8.3','8.4']
         wp: ['latest']
         experimental: [false]
+        phpunit: [12.0]
 
         include:
           # Complement the builds run via the matrix with high/low WP builds for PHP 7.4 and 8.0.
@@ -31,21 +32,27 @@ jobs:
           - php: '8.4'
             wp: 'latest'
             experimental: false
+            phpunit: 12.0
           - php: '8.3'
             wp: 'latest'
             experimental: false
+            phpunit: 12.0
           - php: '8.2'
             wp: 'latest'
             experimental: false
+            phpunit: 11.5
           - php: '8.1'
             wp: 'latest'
             experimental: false
+            phpunit: 10.5
           - php: '8.0'
             wp: 'latest'
             experimental: false
+            phpunit: 9.5
           - php: '7.4'
             wp: 'latest'
             experimental: false
+            phpunit: 9.5
 
     name: "PHP ${{ matrix.php }} - WP ${{ matrix.wp }}"
 
@@ -77,6 +84,7 @@ jobs:
           coverage: none
           # The PHP 5.6 and 7.0 images don't include mysql[i] by default.
           extensions: mysqli
+          tools: phpunit ${{ matrix.phpunit }}
 
       - name: Set up WordPress
         run: phpunit/install.sh wordpress_test root '' 127.0.0.1:3306 ${{ matrix.wp }}
