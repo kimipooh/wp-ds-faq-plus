@@ -21,7 +21,7 @@
 **/
 require_once(preg_replace('|wp-content.*$|','', __FILE__) . 'wp-config.php');
 
-header('Content-type: text/javascript; charset='.get_settings('blog_charset'), true);
+header('Content-type: text/javascript; charset='.get_option('blog_charset'), true);
 header('Cache-control: max-age=2600000, must-revalidate', true);
 
 //function error(){ die( "alert('Что-то не заработало :(')" ); }
@@ -33,14 +33,6 @@ function error($str=""){
     die( "alert('" . _e($str, 'wp-ds-faq') . "')" ); 
   else
     die( "alert('" . _e('Something did not work.','wp-ds-faq') . "')" );
-}
-
-// 1.0.4: CSRF対策（2011.04.07) By Kitani.
-if (isset($_POST['dsfaq_plus_mode_csrf_ticket']) && isset($_SESSION['csrf_ticket'])){
-  $p_ticket = htmlspecialchars($_POST['dsfaq_plus_mode_csrf_ticket'], ENT_QUOTES);
-  $s_ticket = htmlspecialchars($_SESSION['csrf_ticket'], ENT_QUOTES);
-  if($p_ticket != $s_ticket)
-     die( "alert('CSRF Security Error.')" );
 }
 
 /*

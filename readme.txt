@@ -2,9 +2,9 @@
 Contributors: kimipooh
 Tags: faq, answer, question, documentation
 Requires at least: 4.0
-Tested up to: 6.5.2
-Requires PHP: 5.8
-Stable tag: 1.5.0
+Tested up to: 6.7.2
+Requires PHP: 8.0
+Stable tag: 1.5.1
 License: GPL v2  or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,10 @@ When this plugin is deactivated and "WP DS FAQ" is activated, the special functi
 5. Edit Menu.
 
 == Changelog ==
+= 1.5.1 =
+* Changed from deprecated "get_settings" function to "get_option" function.
+* Tested up WordPress 6.7.2 with PHP8.3.19 and PHP 8.4.5
+
 = 1.5.0 =
 * Tested up WordPress 6.1 with PHP8.2
 * Tested up WordPress 6.5.2 with PHP8.3.6
