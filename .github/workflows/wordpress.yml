@@ -84,7 +84,11 @@ jobs:
           coverage: none
           # The PHP 5.6 and 7.0 images don't include mysql[i] by default.
           extensions: mysqli
+<<<<<<< HEAD
           tools: phpunit ${{ matrix.phpunit }}
+=======
+          tools: phpunit
+>>>>>>> 643210ac16677692a054d222b38eaba889532c83
 
       - name: Set up WordPress
         run: phpunit/install.sh wordpress_test root '' 127.0.0.1:3306 ${{ matrix.wp }}
@@ -107,7 +111,7 @@ jobs:
         if: ${{ matrix.php >= 8.0 && ( matrix.wp == 'latest' || ( matrix.wp != 'trunk' && matrix.wp < 5.9 ) ) }}
         uses: "ramsey/composer-install@v1"
         with:
-          composer-options: --ignore-platform-reqs
+          composer-options: --ignore-platform-reqs --prefer-lowest --prefer-stable
 
       - name: Run the unit tests - single site
         run: vendor/bin/phpunit
